@@ -65,15 +65,15 @@ int Demo_Tick(int state) {
 	// Transitions
 	switch (state) {
 		case shift:	
-break;
+			break;
 		default:	
-state = shift;
+			state = shift;
 			break;
 	}	
 	// Actions
 	switch (state) {
-case shift:	
-if (row == 0xEF && pattern == 0x01) { // Reset demo 
+		case shift:	
+			if (row == 0xEF && pattern == 0x01) { // Reset demo 
 				pattern = 0x80;		    
 				row = 0xFE;
 			} else if (pattern == 0x01) { // Move LED to start of next row
@@ -84,7 +84,7 @@ if (row == 0xEF && pattern == 0x01) { // Reset demo
 			}
 			break;
 		default:
-	break;
+			break;
 	}
 	PORTC = pattern;	// Pattern to display
 	PORTD = row;		// Row(s) displaying pattern	
@@ -114,13 +114,15 @@ int main(void) {
     
     unsigned short x;
     while (1) {
-          for(x = 0; x < numTasks; x++){
-		    if(tasks[x]->elapsedTime == tasks[x]->period){
-			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
-			    tasks[x]->elapsedTime = 0;
-		    }
-		tasks[x]->elapsedTime += 1;
-	    }
+//           for(x = 0; x < numTasks; x++){
+// 		    if(tasks[x]->elapsedTime == tasks[x]->period){
+// 			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
+// 			    tasks[x]->elapsedTime = 0;
+// 		    }
+// 		tasks[x]->elapsedTime += 1;
+// 	    }
+	PORTC = 0xFF;
+	PORTD = 0x00;
 	while(!TimerFlag);
 	TimerFlag = 0;
     }
