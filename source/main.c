@@ -100,14 +100,14 @@ int main(void) {
     /* Insert your solution below */
     static task task1;
     
-    task *tasks[] = {&task1, &task2, &task3};
+    task *tasks[] = {&task1};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
     task1.state = start;
     task1.period = 100;
     task1.elapsedTime = task1.period;
-    task1.TickFct = &Demo_States;
+    task1.TickFct = &Demo_Tick;
     
     TimerSet(1);
     TimerOn();
