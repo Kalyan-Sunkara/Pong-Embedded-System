@@ -94,7 +94,33 @@ int Demo_Tick(int state) {
 	PORTD = row;		// Row(s) displaying pattern	
 	return state;
 }
-
+enum Joystick_States {shift};
+int Joystick_Tick(int state) {
+	static unsigned char sensor_value = 0x00;
+	
+	switch (state) {
+		case shift:	
+			break;
+		default:	
+			state = shift;
+			break;
+	}	
+	switch (state) {
+		case shift:
+			sensor_value = ADC;
+			if (sensor_value < 450 && (PORTC != 0x80)) { // Reset demo 
+				PORTC <<= 1;
+			}else if (sensor_value > 650 && (PORTC != 0x01)) { // Move LED to start of next row
+				PORTC >>= 1;
+			} 
+			else { // Shift LED one spot to the right on current row
+			}
+			break;
+		default:
+			break;
+	}
+	return state;
+}
 
 int main(void) {
     /* Insert DDR and PORT initializations */
@@ -113,36 +139,22 @@ int main(void) {
     const char start = 0;
     
     task1.state = start;
-    task1.period = 100;
+    task1.period = 200;
     task1.elapsedTime = task1.period;
-    task1.TickFct = &Demo_Tick;
+    task1.TickFct = &Joystick_Tick;
     
     TimerSet(1);
     TimerOn();
     
     unsigned short x;
     while (1) {
-//           for(x = 0; x < numTasks; x++){
-// 		    if(tasks[x]->elapsedTime == tasks[x]->period){
-// 			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
-// 			    tasks[x]->elapsedTime = 0;
-// 		    }
-// 		tasks[x]->elapsedTime += 1;
-// 	    }
-	sensor_value = ADC;
-	if(sensor_value < 450 && (PORTC != 0x80)){
-		PORTC <<= 1;
-	}
-	else if(sensor_value > 650 && (PORTC != 0x01)){
-		PORTC >>= 1;
-	}
-	else{
-		
-	}
-// 	PORTD = (char)sensor_value;
-	
-// 	PORTC = 0xFF;
-// 	PORTD = 0x00;
+          for(x = 0; x < numTasks; x++){
+		    if(tasks[x]->elapsedTime == tasks[x]->period){
+			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
+			    tasks[x]->elapsedTime = 0;
+		    }
+		tasks[x]->elapsedTime += 1;
+	    }
 	while(!TimerFlag);
 	TimerFlag = 0;
     }
