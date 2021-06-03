@@ -114,9 +114,9 @@ int Joystick_Tick(int state) {
 	switch (state) {
 		case shift:
 			sensor_value = ADC;
-			if (sensor_value < 450 && (PORTC != 0x80)) { // Reset demo 
+			if (sensor_value < 450) { // Reset demo 
 				PORTD = (PORTD << 1) | 0x01;
-			}else if (sensor_value > 650 && (PORTC != 0x01)) { // Move LED to start of next row
+			}else if (sensor_value > 650) { // Move LED to start of next row
 				PORTD = (PORTD >> 1) | 0x01;
 			} 
 			else { // Shift LED one spot to the right on current row
