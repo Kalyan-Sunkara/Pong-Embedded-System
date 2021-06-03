@@ -114,15 +114,15 @@ int main(void) {
     
     unsigned short x;
     while (1) {
-//           for(x = 0; x < numTasks; x++){
-// 		    if(tasks[x]->elapsedTime == tasks[x]->period){
-// 			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
-// 			    tasks[x]->elapsedTime = 0;
-// 		    }
-// 		tasks[x]->elapsedTime += 1;
-// 	    }
-	PORTC = 0xFF;
-	PORTD = 0x00;
+          for(x = 0; x < numTasks; x++){
+		    if(tasks[x]->elapsedTime == tasks[x]->period){
+			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
+			    tasks[x]->elapsedTime = 0;
+		    }
+		tasks[x]->elapsedTime += 1;
+	    }
+// 	PORTC = 0xFF;
+// 	PORTD = 0x00;
 	while(!TimerFlag);
 	TimerFlag = 0;
     }
