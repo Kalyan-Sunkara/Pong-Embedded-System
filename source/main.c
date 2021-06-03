@@ -47,6 +47,10 @@ void TimerSet(unsigned long M){
     _avr_timer_cntcurr = _avr_timer_M;
 }
 
+void ADC_init(){
+	ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADATE) ;
+}
+
 typedef struct task{
     signed char state;
     unsigned long int period;
@@ -97,6 +101,8 @@ int main(void) {
     /* Insert DDR and PORT initializations */
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
+    ADC_init();
+    unsigned short sensor_value = 0;
     /* Insert your solution below */
     static task task1;
     
@@ -114,13 +120,16 @@ int main(void) {
     
     unsigned short x;
     while (1) {
-          for(x = 0; x < numTasks; x++){
-		    if(tasks[x]->elapsedTime == tasks[x]->period){
-			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
-			    tasks[x]->elapsedTime = 0;
-		    }
-		tasks[x]->elapsedTime += 1;
-	    }
+//           for(x = 0; x < numTasks; x++){
+// 		    if(tasks[x]->elapsedTime == tasks[x]->period){
+// 			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
+// 			    tasks[x]->elapsedTime = 0;
+// 		    }
+// 		tasks[x]->elapsedTime += 1;
+// 	    }
+	sensor_value = ADC;
+	PORTD = (char)sensor_value;
+	
 // 	PORTC = 0xFF;
 // 	PORTD = 0x00;
 	while(!TimerFlag);
