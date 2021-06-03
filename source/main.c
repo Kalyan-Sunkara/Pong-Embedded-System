@@ -96,7 +96,7 @@ typedef struct task{
 // }
 enum Joystick_States {shift};
 int Joystick_Tick(int state) {
-	static unsigned char sensor_value = 0x00;
+	static unsigned short sensor_value = 0x00;
 	
 	switch (state) {
 		case shift:	
@@ -130,7 +130,7 @@ int main(void) {
     PORTC = 0x80;
     PORTD = 0xFE;
     ADC_init();
-    unsigned short sensor_value = 0;
+//     unsigned short sensor_value = 0;
     /* Insert your solution below */
     static task task1;
     
