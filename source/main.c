@@ -130,11 +130,11 @@ int main(void) {
 // 		tasks[x]->elapsedTime += 1;
 // 	    }
 	sensor_value = ADC;
-	if(sensor_value < 512){
-		PORTD = (PORTD << 1) | 0x01;
+	if(sensor_value < 450 && (PORTC != 0x80){
+		PORTC <<= 1;
 	}
-	else if(sensor_value > 512){
-		PORTD = (PORTD >> 1) | 0x01;
+	else if(sensor_value > 650 && (PORTC != 0x01)){
+		PORTC >>= 1;
 	}
 	else{
 		
