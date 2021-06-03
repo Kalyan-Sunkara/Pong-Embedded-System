@@ -50,6 +50,12 @@ void TimerSet(unsigned long M){
 void ADC_init(){
 	ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADATE) ;
 }
+void Set_A2D_Pin(unsigned char pinNum) {
+ADMUX = (pinNum <= 0x07) ? pinNum : ADMUX;
+// Allow channel to stabilize
+static unsigned char i = 0;
+for ( i=0; i<15; i++ ) { asm("nop"); } 
+}
 
 typedef struct task{
     signed char state;
@@ -130,6 +136,7 @@ int main(void) {
     PORTC = 0x80;
     PORTD = 0xFE;
     ADC_init();
+    Set_A2D_Pin(0x01);
 //     unsigned short sensor_value = 0;
     /* Insert your solution below */
     static task task1;
