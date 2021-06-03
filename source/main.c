@@ -64,6 +64,9 @@ typedef struct task{
     int (*TickFct)(int);
 } task;
 
+unsigned char game_running = 0;
+unsigned char solo = 0;
+unsigned char duo = 0;
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -100,10 +103,87 @@ typedef struct task{
 // 	PORTD = row;		// Row(s) displaying pattern	
 // 	return state;
 // }
+enum menu_states {wait, solo_state, solo_state_wait, duo_state, duo_state_wait};
+int menu(int state){
+	if(game_running != 1){
+		switch (state){
+		case wait:	
+			if((~PINB & 0x01) == 0x01){
+				state = solo_state;	
+			}
+			else if((~PINB & 0x02) == 0x02){
+				state = duo_state;
+			}
+			else{
+				state = wait;	
+			}
+			break;
+		case solo_state:
+			if(~PINB == 0x00){
+				state = solo_state_wait;
+			}
+			else{
+				state = solo_state;	
+			}
+			break;
+		case solo_state_wait:
+			if(game_running == 0){
+				state = wait;
+			}
+			else{
+				state = solo_state_wait;	
+			}
+			break;
+		case duo_state:
+			if(~PINB == 0x00){
+				state = duo_state_wait;
+			}
+			else{
+				state = duo_state;	
+			}
+			break;
+		case duo_state_wait:
+			if(game_running == 0){
+				state = wait;
+			}
+			else{
+				state = duo_state_wait;	
+			}
+			break;
+		default:	
+			state = wait;
+			break;
+	}	
+	switch (state) {
+		case wait:
+			duo = 0;
+			solo = 0;
+			game_running = 0;
+			break;
+		case solo_state:
+			solo = 1;
+			duo = 0;
+			game_running = 1;
+			break;
+		case solo_state_wait:
+			break;
+		case duo_state:
+			solo = 0;
+			duo = 1;
+			game_running = 1;
+			break;
+		case duo_state_wait:
+			break;
+		default:	
+			break;
+	}
+	else{}
+	return state;
+}
 enum Joystick_States {shift};
 int Joystick_Tick(int state) {
 	static unsigned short sensor_value = 0x00;
-	
+	if(solo == 1){
 	switch (state) {
 		case shift:	
 			break;
@@ -125,11 +205,66 @@ int Joystick_Tick(int state) {
 		default:
 			break;
 	}
+	}
 	return state;
 }
-
+enum button_movement {shift_button_wait, shift_button_up, shift_button_down};
+int button_movement_Tick(int state) {
+	static unsigned short sensor_value = 0x00;
+	
+	switch (state) {
+		case shift_button_wait:	
+			if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
+				state = shift_button_up;	
+			}
+			else if(((~PINB & 0x02) == 0x02) & ((~PINB & 0x01) != 0x01)){
+				state = shift_button_down;	
+			}
+			else{
+				state = shift_button_wait;
+			}
+			break;
+		case shift_button_up:
+			if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
+				state = shift_button_up;	
+			}
+			else{
+				state = shift_button_wait;	
+			}
+			break;
+		case shift_button_down:
+			if(((~PINB & 0x02) == 0x02) & ((~PINB & 0x01) != 0x01)){
+				state = shift_button_down;	
+			}
+			else{
+				state = shift_button_wait;	
+			}
+			break;
+		default:	
+			state = shift_button;
+			break;
+	}	
+	switch (state) {
+		case shift_button_wait:	
+			break;
+		case shift_button_up:
+			if(PORTD != 0xFE)) {
+				PORTD = ((PORTD >> 1) | 0x80);
+			}
+			break;
+		case shift_button_down:
+			if(PORTD != 0xEF)) {
+				PORTD = ((PORTD << 1) | 0x01);
+			}
+			break;
+		default:	
+			break;
+	}
+	return state;
+}
 int main(void) {
     /* Insert DDR and PORT initializations */
+    DDRB = 0x00; PORTB = 0xFF;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 	
@@ -140,8 +275,9 @@ int main(void) {
 //     unsigned short sensor_value = 0;
     /* Insert your solution below */
     static task task1;
+    static task task2;
     
-    task *tasks[] = {&task1};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -149,6 +285,11 @@ int main(void) {
     task1.period = 200;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Joystick_Tick;
+    
+    task2.state = start;
+    task2.period = 200;
+    task2.elapsedTime = task2.period;
+    task2.TickFct = &button_movement_tick;
     
     TimerSet(1);
     TimerOn();
