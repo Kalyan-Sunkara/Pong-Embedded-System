@@ -96,11 +96,13 @@ int Demo_Tick(int state) {
 }
 
 
-
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
+	
+    PORTC = 0x80;
+    PORTD = 0xFE;
     ADC_init();
     unsigned short sensor_value = 0;
     /* Insert your solution below */
@@ -128,7 +130,16 @@ int main(void) {
 // 		tasks[x]->elapsedTime += 1;
 // 	    }
 	sensor_value = ADC;
-	PORTD = (char)sensor_value;
+	if(sensor_value < 512){
+		PORTD = (PORTD << 1) | 0x01;
+	}
+	else if(sensor_value > 512){
+		PORTD = (PORTD >> 1) | 0x01;
+	}
+	else{
+		
+	}
+// 	PORTD = (char)sensor_value;
 	
 // 	PORTC = 0xFF;
 // 	PORTD = 0x00;
