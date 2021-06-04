@@ -67,20 +67,13 @@ typedef struct task{
 unsigned char game_running = 0;
 unsigned char solo = 0;
 unsigned char duo = 0;
-int paddle1_position_x = 0x80;
-int paddle2_position_x = 0x01;
+unsigned char paddle1_position_x = 0x80;
+unsigned char paddle2_position_x = 0x01;
 // unsigned char ball_position_x = 0x04;
-int positionArray_x[2] = {0x01,0x02};
 
-int paddle1_position_y = 0xF1;
-int paddle2_position_y = 0xFE;
+unsigned paddle1_position_y = 0xF1;
+unsigned paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
-int positionArray_y[2] = {0x01,0x02};
-
-positionArray_y[0] = (paddle1_position_y | 0x00);
-positionArray_y[1] = (paddle2_position_y | 0x00);
-positionArray_x[0] = (paddle1_position_x | 0x00);
-positionArray_x[1] = (paddle2_position_x | 0x00);
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -281,32 +274,29 @@ int button_movement_Tick(int state) {
 	}
 	return state;
 }
-enum display_states{change};
+enum display_states{change1, change2};
 int display(int state){
 	static unsigned char i = 0;
 	switch (state) {
-		case change:	
+		case change1:	
+			state = change2;
+			break;
+		case change2:	
+			state = change1;
 			break;
 		default:	
-			state = shift;
+			state = change1;
 			break;
 	}	
 	switch (state) {
-		case change:
-			positionArray_y[0] = paddle1_position_y;
-			positionArray_y[1] = paddle2_position_y;
-			positionArray_x[0] = paddle1_position_x;
-			positionArray_x[1] = paddle2_position_x;
-			for(i = 0; i < 2; i++){
-				PORTC = positionArray_x[i];
-				PORTD = positionArray_y[i];
-			}
-// 			PORTC = paddle1_position_x;
-// 			PORTD = paddle1_position_y;
-// 			PORTC = paddle2_position_x;
-// 			PORTD = paddle2_position_y;
-// 			PORTC = ball_position_x;
-// 			PORTD = ball_position_y;
+		case change1:
+			PORTC = paddle1_position_x;
+			PORTD = paddle1_position_y;
+			break;
+		case change2:
+			PORTC = paddle2_position_x;
+			PORTD = paddle2_position_y;
+			break;
 		default:	
 			break;
 	}	
