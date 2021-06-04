@@ -204,13 +204,12 @@ int Joystick_Tick(int state) {
 		case shift:
 			sensor_value = ADC;
 			if (sensor_value < 450 && (paddle1_position_y  != 0xEF)) { // Reset demo 
-				paddle1_position_y  = ((paddle1_position_y  << 1) | 0x01);
+				PORTD = ((PORTD  << 1) | 0x01);
 			}else if (sensor_value > 650 && (PORTD != 0xFE)) { // Move LED to start of next row
-				paddle1_position_y  = ((paddle1_position_y  >> 1) | 0x80);
+				PORTD = ((PORTD  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
-			PORTD = paddle1_position_y;
 			break;
 		default:
 			break;
@@ -258,14 +257,14 @@ int button_movement_Tick(int state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(paddle1_position_y != 0xFE) {
-				paddle1_position_y = ((paddle1_position_y >> 1) | 0x80);
+			if(PORTD != 0xFE) {
+				PORTD = ((PORTD >> 1) | 0x80);
 			}
 // 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
-			if(paddle1_position_y != 0xEF) {
-				paddle1_position_y = ((paddle1_position_y << 1) | 0x01);
+			if(PORTD != 0xEF) {
+				PORTD = ((PORTD << 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
 			break;
@@ -317,9 +316,9 @@ int main(void) {
     /* Insert your solution below */
     static task task1;
     static task task2;
-    static task task3;
+//     static task task3;
 	
-    task *tasks[] = {&task1, &task2, &task3};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -333,10 +332,10 @@ int main(void) {
     task2.elapsedTime = task2.period;
     task2.TickFct = &button_movement_Tick;
     
-    task3.state = start;
-    task3.period = 1;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &display;
+//     task3.state = start;
+//     task3.period = 1;
+//     task3.elapsedTime = task3.period;
+//     task3.TickFct = &display;
 	
     TimerSet(1);
     TimerOn();
