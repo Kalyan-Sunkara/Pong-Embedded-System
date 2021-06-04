@@ -202,10 +202,10 @@ int Joystick_Tick(int state) {
 	switch (state) {
 		case shift:
 			sensor_value = ADC;
-			if (sensor_value < 450 && ((paddle1_position_y & 0x10) == 0x10)) { // Reset demo 
-				paddle1_position_y = ((paddle1_position_y  << 1) | 0x01);
-			}else if (sensor_value > 650 && (paddle1_position_y != 0xF8)) { // Move LED to start of next row
-				paddle1_position_y = ((paddle1_position_y  >> 1) | 0x80);
+			if (sensor_value < 450 && ((paddle2_position_y & 0x10) == 0x10)) { // Reset demo 
+				paddle2_position_y = ((paddle2_position_y  << 1) | 0x01);
+			}else if (sensor_value > 650 && (paddle2_position_y != 0xF8)) { // Move LED to start of next row
+				paddle2_position_y = ((paddle2_position_y  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
