@@ -70,12 +70,12 @@ unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 // unsigned char ball_position_x = 0x04;
-unsigned char positionArray_x[2] = {0x00,0x00};
+unsigned char positionArray_x[2] = {0x01,0x02};
 
 unsigned char paddle1_position_y = 0xF1;
 unsigned char paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
-unsigned char positionArray_y[2] = {0x00,0x00};
+unsigned char positionArray_y[2] = {0x01,0x02};
 
 positionArray_y[0] = paddle1_position_y;
 positionArray_y[1] = paddle2_position_y;
