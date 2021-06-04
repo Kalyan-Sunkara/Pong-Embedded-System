@@ -77,10 +77,10 @@ unsigned char paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
 unsigned char positionArray_y[2] = {0x01,0x02};
 
-positionArray_y[0] = paddle1_position_y;
-positionArray_y[1] = paddle2_position_y;
-positionArray_x[0] = paddle1_position_x;
-positionArray_x[1] = paddle2_position_x;
+positionArray_y[0] = (paddle1_position_y | 0x00);
+positionArray_y[1] = (paddle2_position_y | 0x00);
+positionArray_x[0] = (paddle1_position_x | 0x00);
+positionArray_x[1] = (paddle2_position_x | 0x00);
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -297,7 +297,7 @@ int display(int state){
 			positionArray_y[1] = paddle2_position_y;
 			positionArray_x[0] = paddle1_position_x;
 			positionArray_x[1] = paddle2_position_x;
-			for(i = 0; i < 3; i++){
+			for(i = 0; i < 2; i++){
 				PORTC = positionArray_x[i];
 				PORTD = positionArray_y[i];
 			}
