@@ -203,9 +203,9 @@ int Joystick_Tick(int state) {
 	switch (state) {
 		case shift:
 			sensor_value = ADC;
-			if (sensor_value < 450 && (paddle1_position_y  != 0xEF)) { // Reset demo 
+			if (sensor_value < 450 && (PORTD  != 0xE3)) { // Reset demo 
 				PORTD = ((PORTD  << 1) | 0x01);
-			}else if (sensor_value > 650 && (PORTD != 0xFE)) { // Move LED to start of next row
+			}else if (sensor_value > 650 && (PORTD != 0xF8)) { // Move LED to start of next row
 				PORTD = ((PORTD  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
@@ -257,7 +257,7 @@ int button_movement_Tick(int state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(PORTD != 0xF1) {
+			if(PORTD != 0xF8) {
 				PORTD = ((PORTD >> 1) | 0x80);
 			}
 // 			PORTD = paddle1_position_y;
