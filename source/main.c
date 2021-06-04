@@ -263,7 +263,7 @@ int button_movement_Tick(int state) {
 // 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
-			if(paddle1_position_y != 0xE3) {
+			if((paddle1_position_y & 0x10) == 0x10) {
 				paddle1_position_y = ((paddle1_position_y<< 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
