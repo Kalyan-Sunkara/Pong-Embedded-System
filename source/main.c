@@ -70,11 +70,17 @@ unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 // unsigned char ball_position_x = 0x04;
-unsigned char positionArray_x[3] = {0,0,0};
-unsigned char paddle1_position_y = 0xFE;
+unsigned char positionArray_x[2] = {0,0};
+
+unsigned char paddle1_position_y = 0xF1;
 unsigned char paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
-unsigned char positionArray_y[3] = {0,0,0};
+unsigned char positionArray_y[2] = {0,0};
+
+positionArray_y[0] = paddle1_position_y;
+positionArray_y[1] = paddle2_position_y;
+positionArray_x[0] = paddle1_position_x;
+positionArray_x[1] = paddle2_position_x;
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -203,10 +209,10 @@ int Joystick_Tick(int state) {
 	switch (state) {
 		case shift:
 			sensor_value = ADC;
-			if (sensor_value < 450 && (positionArray_y[0]  != 0xE3)) { // Reset demo 
-				positionArray_y[0] = ((positionArray_y[0]  << 1) | 0x01);
+			if (sensor_value < 450 && (paddle1_position_y  != 0xE3)) { // Reset demo 
+				paddle1_position_y = ((paddle1_position_y  << 1) | 0x01);
 			}else if (sensor_value > 650 && (positionArray != 0xF8)) { // Move LED to start of next row
-				positionArray_y[0] = ((positionArray_y[0]  >> 1) | 0x80);
+				paddle1_position_y = ((paddle1_position_y  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
@@ -257,14 +263,15 @@ int button_movement_Tick(int state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(positionArray_y[0] != 0xF8) {
-				positionArray_y[0]= ((positionArray_y[0]>> 1) | 0x80);
+			if(paddle1_position_y != 0xF8) {
+				paddle1_position_y = ((paddle1_position_y>> 1) | 0x80);
 			}
+			
 // 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
 			if(positionArray_y[0] != 0xE3) {
-				positionArray_y[0] = ((positionArray_y[0]<< 1) | 0x01);
+				paddle1_position_y = ((paddle1_position_y]<< 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
 			break;
@@ -285,7 +292,11 @@ int display(int state){
 			break;
 	}	
 	switch (state) {
-		case change:	
+		case change:
+			positionArray_y[0] = paddle1_position_y;
+			positionArray_y[1] = paddle2_position_y;
+			positionArray_x[0] = paddle1_position_x;
+			positionArray_x[1] = paddle2_position_x;
 			for(i = 0; i < 3; i++){
 				PORTC = positionArray_x[i];
 				PORTD = positionArray_y[i];
