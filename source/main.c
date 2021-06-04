@@ -67,15 +67,15 @@ typedef struct task{
 unsigned char game_running = 0;
 unsigned char solo = 0;
 unsigned char duo = 0;
-unsigned char paddle1_position_x = 0x80;
-unsigned char paddle2_position_x = 0x01;
+int paddle1_position_x = 0x80;
+int paddle2_position_x = 0x01;
 // unsigned char ball_position_x = 0x04;
-unsigned char positionArray_x[2] = {0x01,0x02};
+int positionArray_x[2] = {0x01,0x02};
 
-unsigned char paddle1_position_y = 0xF1;
-unsigned char paddle2_position_y = 0xFE;
+int paddle1_position_y = 0xF1;
+int paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
-unsigned char positionArray_y[2] = {0x01,0x02};
+int positionArray_y[2] = {0x01,0x02};
 
 positionArray_y[0] = (paddle1_position_y | 0x00);
 positionArray_y[1] = (paddle2_position_y | 0x00);
