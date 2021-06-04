@@ -185,6 +185,7 @@ int menu(int state){
 		default:	
 			break;
 	}
+	}
 	else{}
 	return state;
 }
@@ -218,7 +219,7 @@ int Joystick_Tick(int state) {
 }
 enum button_movement {shift_button_wait, shift_button_up, shift_button_down};
 int button_movement_Tick(int state) {
-	static unsigned short sensor_value = 0x00;
+// 	static unsigned short sensor_value = 0x00;
 	
 	switch (state) {
 		case shift_button_wait:	
@@ -249,19 +250,19 @@ int button_movement_Tick(int state) {
 			}
 			break;
 		default:	
-			state = shift_button;
+			state = shift_button_wait;
 			break;
 	}	
 	switch (state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(paddle1_position_y != 0xFE)) {
+			if(paddle1_position_y != 0xFE) {
 				paddle1_position_y = ((PORTD >> 1) | 0x80);
 			}
 			break;
 		case shift_button_down:
-			if(paddle1_position_y != 0xEF)) {
+			if(paddle1_position_y != 0xEF) {
 				paddle1_position_y = ((PORTD << 1) | 0x01);
 			}
 			break;
@@ -271,7 +272,7 @@ int button_movement_Tick(int state) {
 	return state;
 }
 enum display_states{change};
-int display(state){
+int display(int state){
 	static unsigned char i = 0;
 	switch (state) {
 		case change:	
@@ -326,7 +327,7 @@ int main(void) {
     task2.state = start;
     task2.period = 200;
     task2.elapsedTime = task2.period;
-    task2.TickFct = &button_movement_tick;
+    task2.TickFct = &button_movement_Tick;
     
     task3.state = start;
     task3.period = 1;
