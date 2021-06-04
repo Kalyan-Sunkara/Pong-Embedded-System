@@ -67,6 +67,14 @@ typedef struct task{
 unsigned char game_running = 0;
 unsigned char solo = 0;
 unsigned char duo = 0;
+unsigned char paddle1_position_x = 0x80;
+unsigned char paddle2_position_x = 0x01;
+unsigned char ball_position_x = 0x04;
+unsigned char positionArray_x[3] = {paddle1_position_x,paddle2_position_x,ball_position_x};
+unsigned char paddle1_position_y = 0xFE;
+unsigned char paddle2_position_y = 0xFE;
+unsigned char ball_position_y = 0xFB;
+unsigned char positionArray_y[3] = {paddle1_position_y,paddle2_position_y,ball_position_y};
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -194,10 +202,10 @@ int Joystick_Tick(int state) {
 	switch (state) {
 		case shift:
 			sensor_value = ADC;
-			if (sensor_value < 450 && (PORTD != 0xEF)) { // Reset demo 
-				PORTD = ((PORTD << 1) | 0x01);
+			if (sensor_value < 450 && (paddle1_position_y  != 0xEF)) { // Reset demo 
+				paddle1_position_y  = ((paddle1_position_y  << 1) | 0x01);
 			}else if (sensor_value > 650 && (PORTD != 0xFE)) { // Move LED to start of next row
-				PORTD = ((PORTD >> 1) | 0x80);
+				paddle1_position_y  = ((paddle1_position_y  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
@@ -248,13 +256,13 @@ int button_movement_Tick(int state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(PORTD != 0xFE)) {
-				PORTD = ((PORTD >> 1) | 0x80);
+			if(paddle1_position_y != 0xFE)) {
+				paddle1_position_y = ((PORTD >> 1) | 0x80);
 			}
 			break;
 		case shift_button_down:
-			if(PORTD != 0xEF)) {
-				PORTD = ((PORTD << 1) | 0x01);
+			if(paddle1_position_y != 0xEF)) {
+				paddle1_position_y = ((PORTD << 1) | 0x01);
 			}
 			break;
 		default:	
@@ -262,6 +270,28 @@ int button_movement_Tick(int state) {
 	}
 	return state;
 }
+enum display_states{change};
+int display(state){
+	static unsigned char i = 0;
+	switch (state) {
+		case change:	
+			break;
+		default:	
+			state = shift;
+			break;
+	}	
+	switch (state) {
+		case change:	
+			for(i = 0; i < 3; i++){
+				PORTC = positionArray_x[i];
+				PORTD = positionArray_y[i];
+			}
+		default:	
+			break;
+	}	
+	return state;	
+}
+	
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRB = 0x00; PORTB = 0xFF;
@@ -276,8 +306,9 @@ int main(void) {
     /* Insert your solution below */
     static task task1;
     static task task2;
-    
-    task *tasks[] = {&task1, &task2};
+    static task task3;
+	
+    task *tasks[] = {&task1, &task2, &task3};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -291,6 +322,11 @@ int main(void) {
     task2.elapsedTime = task2.period;
     task2.TickFct = &button_movement_tick;
     
+    task3.state = start;
+    task3.period = 1;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &display;
+	
     TimerSet(1);
     TimerOn();
     
