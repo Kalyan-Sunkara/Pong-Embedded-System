@@ -257,13 +257,13 @@ int button_movement_Tick(int state) {
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
-			if(PORTD != 0xFE) {
+			if(PORTD != 0xF1) {
 				PORTD = ((PORTD >> 1) | 0x80);
 			}
 // 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
-			if(PORTD != 0xEF) {
+			if(PORTD != 0xE3) {
 				PORTD = ((PORTD << 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
@@ -309,7 +309,7 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
 	
     PORTC = 0x80;
-    PORTD = 0xFE;
+    PORTD = 0xF1;
     ADC_init();
     Set_A2D_Pin(0x01);
 //     unsigned short sensor_value = 0;
