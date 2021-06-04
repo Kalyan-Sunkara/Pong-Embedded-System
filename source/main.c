@@ -70,11 +70,11 @@ unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 unsigned char ball_position_x = 0x04;
-unsigned char positionArray_x[3] = {paddle1_position_x,paddle2_position_x,ball_position_x};
+// unsigned char positionArray_x[3] = {paddle1_position_x,paddle2_position_x,ball_position_x};
 unsigned char paddle1_position_y = 0xFE;
 unsigned char paddle2_position_y = 0xFE;
 unsigned char ball_position_y = 0xFB;
-unsigned char positionArray_y[3] = {paddle1_position_y,paddle2_position_y,ball_position_y};
+// unsigned char positionArray_y[3] = {paddle1_position_y,paddle2_position_y,ball_position_y};
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -282,10 +282,16 @@ int display(state){
 	}	
 	switch (state) {
 		case change:	
-			for(i = 0; i < 3; i++){
-				PORTC = positionArray_x[i];
-				PORTD = positionArray_y[i];
-			}
+// 			for(i = 0; i < 3; i++){
+// 				PORTC = positionArray_x[i];
+// 				PORTD = positionArray_y[i];
+// 			}
+			PORTC = paddle1_position_x;
+			PORTD = paddle1_position_y;
+			PORTC = paddle2_position_x;
+			PORTD = paddle2_position_y;
+			PORTC = ball_position_x;
+			PORTD = ball_position_y;
 		default:	
 			break;
 	}	
