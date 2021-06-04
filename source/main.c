@@ -319,7 +319,7 @@ int main(void) {
     static task task2;
     static task task3;
 	
-    task *tasks[] = {&task1, &task2};
+    task *tasks[] = {&task1, &task2, &task3};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
