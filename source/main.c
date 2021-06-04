@@ -69,11 +69,11 @@ unsigned char solo = 0;
 unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
-unsigned char ball_position_x = 0x04;
+// unsigned char ball_position_x = 0x04;
 // unsigned char positionArray_x[3] = {paddle1_position_x,paddle2_position_x,ball_position_x};
 unsigned char paddle1_position_y = 0xFE;
 unsigned char paddle2_position_y = 0xFE;
-unsigned char ball_position_y = 0xFB;
+// unsigned char ball_position_y = 0xFB;
 // unsigned char positionArray_y[3] = {paddle1_position_y,paddle2_position_y,ball_position_y};
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
@@ -210,6 +210,7 @@ int Joystick_Tick(int state) {
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
+			PORTD = paddle1_position_y;
 			break;
 		default:
 			break;
@@ -258,14 +259,17 @@ int button_movement_Tick(int state) {
 			break;
 		case shift_button_up:
 			if(paddle1_position_y != 0xFE) {
-				paddle1_position_y = ((PORTD >> 1) | 0x80);
+				paddle1_position_y = ((paddle1_position_y >> 1) | 0x80);
 			}
+// 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
 			if(paddle1_position_y != 0xEF) {
-				paddle1_position_y = ((PORTD << 1) | 0x01);
+				paddle1_position_y = ((paddle1_position_y << 1) | 0x01);
 			}
+// 			PORTD = paddle1_position_y;
 			break;
+			
 		default:	
 			break;
 	}
@@ -291,8 +295,8 @@ int display(int state){
 			PORTD = paddle1_position_y;
 			PORTC = paddle2_position_x;
 			PORTD = paddle2_position_y;
-			PORTC = ball_position_x;
-			PORTD = ball_position_y;
+// 			PORTC = ball_position_x;
+// 			PORTD = ball_position_y;
 		default:	
 			break;
 	}	
