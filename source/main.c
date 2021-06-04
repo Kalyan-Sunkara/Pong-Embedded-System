@@ -70,12 +70,12 @@ unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 // unsigned char ball_position_x = 0x04;
-unsigned char positionArray_x[2] = {0,0};
+unsigned char positionArray_x[2] = {0x00,0x00};
 
 unsigned char paddle1_position_y = 0xF1;
 unsigned char paddle2_position_y = 0xFE;
 // unsigned char ball_position_y = 0xFB;
-unsigned char positionArray_y[2] = {0,0};
+unsigned char positionArray_y[2] = {0x00,0x00};
 
 positionArray_y[0] = paddle1_position_y;
 positionArray_y[1] = paddle2_position_y;
@@ -211,7 +211,7 @@ int Joystick_Tick(int state) {
 			sensor_value = ADC;
 			if (sensor_value < 450 && (paddle1_position_y  != 0xE3)) { // Reset demo 
 				paddle1_position_y = ((paddle1_position_y  << 1) | 0x01);
-			}else if (sensor_value > 650 && (positionArray != 0xF8)) { // Move LED to start of next row
+			}else if (sensor_value > 650 && (paddle1_position_y != 0xF8)) { // Move LED to start of next row
 				paddle1_position_y = ((paddle1_position_y  >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
@@ -270,7 +270,7 @@ int button_movement_Tick(int state) {
 // 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
-			if(positionArray_y[0] != 0xE3) {
+			if(paddle1_position_y != 0xE3) {
 				paddle1_position_y = ((paddle1_position_y]<< 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
