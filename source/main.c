@@ -334,7 +334,7 @@ int main(void) {
     task2.TickFct = &button_movement_Tick;
     
     task3.state = start;
-    task3.period = 300;
+    task3.period = 1;
     task3.elapsedTime = task3.period;
     task3.TickFct = &display;
 	
