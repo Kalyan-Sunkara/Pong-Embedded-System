@@ -191,7 +191,7 @@ int menu(int state){
 enum Joystick_States {shift};
 int Joystick_Tick(int state) {
 	static unsigned short sensor_value = 0x00;
-	if(solo == 1){
+// 	if(solo == 1){
 	switch (state) {
 		case shift:	
 			break;
@@ -213,7 +213,7 @@ int Joystick_Tick(int state) {
 		default:
 			break;
 	}
-	}
+// 	}
 	return state;
 }
 enum button_movement {shift_button_wait, shift_button_up, shift_button_down};
