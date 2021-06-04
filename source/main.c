@@ -309,8 +309,8 @@ int main(void) {
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 	
-    PORTC = 0x80;
-    PORTD = 0xF1;
+//     PORTC = 0x80;
+//     PORTD = 0xF1;
     ADC_init();
     Set_A2D_Pin(0x01);
 //     unsigned short sensor_value = 0;
