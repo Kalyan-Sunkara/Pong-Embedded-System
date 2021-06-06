@@ -75,13 +75,13 @@ unsigned paddle1_position_y = 0xF1;
 unsigned paddle2_position_y = 0xF1;
 unsigned char ball_position_y = 0xFB;
 
-unsigned char paddle1_left = 0x02;
-unsigned char paddle1_middle = 0x04;
-unsigned char paddle1_right = 0x08;
+unsigned char paddle1_left = 0xFD;
+unsigned char paddle1_middle = 0xFB;
+unsigned char paddle1_right = 0xF7;
 
-unsigned char paddle2_left = 0x02; 
-unsigned char paddle2_middle = 0x04;
-unsigned char paddle2_right = 0x08; 
+unsigned char paddle2_left = 0xFD; 
+unsigned char paddle2_middle = 0xFB;
+unsigned char paddle2_right = 0xF7; 
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -299,7 +299,7 @@ enum ball_physics{ball_moving_right_straight, ball_moving_left_straight};
 int ball_physics_Tick(int state) {
 	switch(state){
 		case ball_moving_right_straight:
-			if((ball_position_x == 0x01) || ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+			if((ball_position_x == 0x01) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
 				state = ball_moving_left_straight;	
 			}
 			else{
