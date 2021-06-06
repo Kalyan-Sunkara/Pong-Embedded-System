@@ -328,13 +328,13 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x40) && (ball_position_y == 0xFE) && ((ball_position_y) == (paddle2_left))){
 				state = ball_moving_right_down;
 			}
-			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle2_left))){
+			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_left))){
 				state = ball_moving_right_up;
 			}
-			else if((ball_position_x == 0x40) && (ball_position_y == 0xEF) && ((ball_position_y) == (paddle2_right))){
+			else if((ball_position_x == 0x40) && (ball_position_y == 0xEF) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_up;
 			}
-			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle2_right))){
+			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_down;
 			}
 			else{
