@@ -295,7 +295,7 @@ int button_movement_Tick(int state) {
 	return state;
 }
 
-enum ball_physics{ball_moving_right, ball_moving_left};
+enum ball_physics{ball_moving_right_straight, ball_moving_left_straight};
 int ball_physics_Tick(int state) {
 	switch(state){
 		case ball_moving_right_straight:
@@ -327,7 +327,7 @@ int ball_physics_Tick(int state) {
 		case ball_moving_right_straight:
 			ball_position_x >>= 1;
 			break;
-		case ball_moving_right_straight:
+		case ball_moving_left_straight:
 			ball_position_x <<= 1;
 			break;
 	}
@@ -384,8 +384,9 @@ int main(void) {
     static task task1;
     static task task2;
     static task task3;
+    static task task4;
 	
-    task *tasks[] = {&task1, &task2, &task3};
+    task *tasks[] = {&task1, &task2, &task3, &task4};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -402,7 +403,12 @@ int main(void) {
     task3.state = start;
     task3.period = 1;
     task3.elapsedTime = task3.period;
-    task3.TickFct = &display;
+    task3.TickFct = &ball_physics_Tick;
+	
+    task4.state = start;
+    task4.period = 1;
+    task4.elapsedTime = task4.period;
+    task4.TickFct = &display;
 	
     TimerSet(1);
     TimerOn();
