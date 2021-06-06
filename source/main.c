@@ -90,47 +90,12 @@ unsigned char top = 0xFE;
 int player1_score = 0;
 int player2_score = 0;
 int goal = 0;
-// enum Demo_States {shift};
-// int Demo_Tick(int state) {
 
-// 	// Local Variables
-// 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
-// 	static unsigned char row = 0xFE;  	// Row(s) displaying pattern. 
-// 							// 0: display pattern on row
-// 							// 1: do NOT display pattern on row
-// 	// Transitions
-// 	switch (state) {
-// 		case shift:	
-// 			break;
-// 		default:	
-// 			state = shift;
-// 			break;
-// 	}	
-// 	// Actions
-// 	switch (state) {
-// 		case shift:	
-// 			if (row == 0xEF && pattern == 0x01) { // Reset demo 
-// 				pattern = 0x80;		    
-// 				row = 0xFE;
-// 			} else if (pattern == 0x01) { // Move LED to start of next row
-// 				pattern = 0x80;
-// 				row = (row << 1) | 0x01;
-// 			} else { // Shift LED one spot to the right on current row
-// 				pattern >>= 1;
-// 			}
-// 			break;
-// 		default:
-// 			break;
-// 	}
-// 	PORTC = pattern;	// Pattern to display
-// 	PORTD = row;		// Row(s) displaying pattern	
-// 	return state;
-// }
 enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
 int menu(int state){
 	if(game_running != 1){
 		switch (state){
-		case wait:	
+		case wait1:	
 			if((~PINB & 0x01) == 0x01){
 				state = solo_state;	
 			}
@@ -138,7 +103,7 @@ int menu(int state){
 				state = duo_state;
 			}
 			else{
-				state = wait;	
+				state = wait1;	
 			}
 			break;
 		case solo_state:
@@ -151,7 +116,7 @@ int menu(int state){
 			break;
 		case solo_state_wait:
 			if(game_running == 0){
-				state = wait;
+				state = wait1;
 			}
 			else{
 				state = solo_state_wait;	
@@ -167,18 +132,18 @@ int menu(int state){
 			break;
 		case duo_state_wait:
 			if(game_running == 0){
-				state = wait;
+				state = wait1;
 			}
 			else{
 				state = duo_state_wait;	
 			}
 			break;
 		default:	
-			state = wait;
+			state = wait1;
 			break;
 	}	
 	switch (state) {
-		case wait:
+		case wait1:
 			duo = 0;
 			solo = 0;
 			game_running = 0;
@@ -219,7 +184,7 @@ int Joystick_Tick(int state) {
 			break;
 		case shift:
 			if(pause == 1){
-				state = wait_for_game3'	
+				state = wait_for_game3;	
 			}
 			break;
 		default:	
@@ -254,7 +219,6 @@ int Joystick_Tick(int state) {
 enum button_movement {wait_for_game2, shift_button_wait, shift_button_up, shift_button_down};
 int button_movement_Tick(int state) {
 // 	static unsigned short sensor_value = 0x00;
-	
 	switch (state) {
 		case wait_for_game2:
 			if(pause == 1){
@@ -528,16 +492,16 @@ int ball_physics_Tick(int state) {
 			break;
 		case score1:
 			goal = 1;
-			player1_score +=1
+			player1_score +=1;
 			break;
 		case score2:
 			goal = 1;
-			player2_score +=1
+			player2_score +=1;
 			break;
 	}
 	return state;	
 }
-enum game_states{pre, hold, play, win);
+enum game_states{pre, hold, play, win};
 int game_SM(int state){
 	switch(state){
 		case pre:
@@ -569,7 +533,7 @@ int game_SM(int state){
 			break;
 		case win:
 			state = pre;
-			break
+			break;
 			
 	}
 	switch(state){
@@ -599,14 +563,14 @@ int game_SM(int state){
 			player1_score = 0;
 			player2_score = 0;
 			pause = 1;
-			break	
+			break;	
 	}
 	return state;
 }
 enum display_states{menu_display, change1, change2, change3};
 int display(int state){
 	switch (state) {
-		case menu_diplay:
+		case menu_display:
 			if(game_running == 0){
 				state = menu_display;	
 			}
@@ -678,7 +642,7 @@ int main(void) {
     task1.state = start;
     task1.period = 200;
     task1.elapsedTime = task1.period;
-    task1.TickFct= &menu
+    task1.TickFct= &menu;
     
     task2.state = start;
     task2.period = 150;
@@ -693,7 +657,7 @@ int main(void) {
     task4.state = start;
     task4.period = 150;
     task4.elapsedTime = task4.period;
-    task4.TickFct = &game_states;
+    task4.TickFct = &game_SM;
 	
     task5.state = start;
     task5.period = 150;
@@ -721,4 +685,40 @@ int main(void) {
 	TimerFlag = 0;
     }
     return 1;
-}
+}	 
+// enum Demo_States {shift};
+// int Demo_Tick(int state) {
+
+// 	// Local Variables
+// 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
+// 	static unsigned char row = 0xFE;  	// Row(s) displaying pattern. 
+// 							// 0: display pattern on row
+// 							// 1: do NOT display pattern on row
+// 	// Transitions
+// 	switch (state) {
+// 		case shift:	
+// 			break;
+// 		default:	
+// 			state = shift;
+// 			break;
+// 	}	
+// 	// Actions
+// 	switch (state) {
+// 		case shift:	
+// 			if (row == 0xEF && pattern == 0x01) { // Reset demo 
+// 				pattern = 0x80;		    
+// 				row = 0xFE;
+// 			} else if (pattern == 0x01) { // Move LED to start of next row
+// 				pattern = 0x80;
+// 				row = (row << 1) | 0x01;
+// 			} else { // Shift LED one spot to the right on current row
+// 				pattern >>= 1;
+// 			}
+// 			break;
+// 		default:
+// 			break;
+// 	}
+// 	PORTC = pattern;	// Pattern to display
+// 	PORTD = row;		// Row(s) displaying pattern	
+// 	return state;
+// }
