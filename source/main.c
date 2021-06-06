@@ -352,18 +352,18 @@ int display(int state){
 	}	
 	switch (state) {
 		case change1:
-			PORTC = 0xFF;
-			PORTD = 0x00;
-// 			PORTC = paddle1_position_x;
-// 			PORTD = paddle1_position_y;
+// 			PORTC = 0xFF;
+// 			PORTD = 0x00;
+			PORTC = paddle1_position_x;
+			PORTD = paddle1_position_y;
 			break;
 		case change2:
-// 			PORTC = paddle2_position_x;
-// 			PORTD = paddle2_position_y;
+			PORTC = paddle2_position_x;
+			PORTD = paddle2_position_y;
 			break;
 		case change3:
-// 			PORTC = ball_position_x;
-// 			PORTD = ball_position_y;
+			PORTC = ball_position_x;
+			PORTD = ball_position_y;
 			break;
 		default:	
 			break;
