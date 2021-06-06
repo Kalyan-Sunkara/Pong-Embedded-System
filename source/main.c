@@ -554,9 +554,16 @@ int game_SM(int state){
 			}
 			break;
 		case win:
-			state = pre;
+			state = win_hold;
 			break;
-			
+		case win_hold:
+		 	if(game_running == 0){
+				state = pre;	
+			}
+			else{
+				state = win_hold;
+			}
+			break;		
 	}
 	switch(state){
 		case pre:
@@ -583,13 +590,15 @@ int game_SM(int state){
 			pause = 0;
 			break;
 		case win:
-			game_running = 0;
+// 			game_running = 0;
 			player1_score = 0x00;
 			player2_score = 0x00;
 			player1_scores_point = 0;
 			player2_scores_point = 0;
 			pause = 1;
 			break;	
+		case win_hold:
+			break;
 	}
 	return state;
 }
