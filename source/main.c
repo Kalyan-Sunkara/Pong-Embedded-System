@@ -158,6 +158,7 @@ int menu(int state){
 			game_running = 0;
 			break;
 		case ingame:
+			game_running = 1;
 			break;
 // 		case solo_state:
 // 			solo = 1;
