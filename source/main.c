@@ -89,8 +89,8 @@ unsigned char top = 0xFE;
 
 int player1_scores_point = 0;
 int player2_scores_point = 0;
-int player1_score = 0;
-int player2_score = 0;
+unsigned char player1_score = 0x00;
+unsigned char player2_score = 0x00;
 // int goal = 0;
 
 enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
@@ -526,8 +526,8 @@ int game_SM(int state){
 			break;
 		case play:
 			if(player1_scores_point == 1){
-				player1_score = player1_score + 1;
-				if(player1_score == 3){
+				player1_score = ((player1_score << 1)| 0x01);
+				if(player1_score == 0x07){
 					state = win;	
 				}
 				else{
@@ -535,8 +535,8 @@ int game_SM(int state){
 				}
 			}
 			else if(player2_scores_point == 1){
-				player2_score = player2_score + 1;
-				if(player2_score == 3){
+				player2_score = ((player2_score << 1)| 0x01);
+				if(player2_score == 0x07){
 					state = win;	
 				}
 				else{
@@ -578,8 +578,8 @@ int game_SM(int state){
 			break;
 		case win:
 			game_running = 0;
-			player1_score = 0;
-			player2_score = 0;
+			player1_score = 0x00;
+			player2_score = 0x00;
 			pause = 1;
 			break;	
 	}
