@@ -580,6 +580,8 @@ int game_SM(int state){
 			game_running = 0;
 			player1_score = 0x00;
 			player2_score = 0x00;
+			player1_scores_point = 0;
+			player2_scores_point = 0;
 			pause = 1;
 			break;	
 	}
@@ -596,17 +598,32 @@ int display(int state){
 				state = change1;	
 			}
 			break;
-		case change1:	
-			state = change2;
+		case change1:
+			if(game_running == 0){
+				state = menu_display;	
+			}
+			else{
+				state = change2;
+			}
 			break;
 		case change2:	
-			state = change3;
+			if(game_running == 0){
+				state = menu_display;	
+			}
+			else{
+				state = change3;
+			}
 			break;
 		case change3:	
-			state = change1;
+			if(game_running == 0){
+				state = menu_display;	
+			}
+			else{
+				state = change1;
+			}
 			break;	
 		default:	
-			state = change1;
+			state = menu_display;
 			break;
 	}	
 	switch (state) {
@@ -631,6 +648,39 @@ int display(int state){
 			break;
 	}	
 	return state;	
+}
+enum reset_states{wait_reset, reset};
+int reset_SM(int state){
+	switch(state){
+		case wait_reset:
+			if((~PINB & 0x08) == 0x08){
+				state = reset;	
+			}
+			else{
+				state = wait_reset;	
+			}
+			break;
+		case reset:
+			state = wait_reset;
+			break;
+		default:
+			state = wait_reset;
+	}
+	switch(state){
+		case wait_reset:
+			break;
+		case reset:
+			game_running = 0;
+			pause = 1;
+			player1_score = 0x00;
+			player2_score = 0x00;
+			player1_scores_point = 0;
+			player2_scores_point = 0;
+			break;	
+		default:
+			break;
+	}
+	return state;
 }
 enum LED_STATES{score_check};
 int LED_SM(int state){
@@ -701,8 +751,9 @@ int main(void) {
     static task task5;
     static task task6;
     static task task7;
+    static task task8;
 	
-    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6, &task7};
+    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6, &task7, &task8};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -742,6 +793,11 @@ int main(void) {
     task7.period = 100;
     task7.elapsedTime = task7.period;
     task7.TickFct = &LED_SM;
+
+    task8.state = start;
+    task8.period = 100;
+    task8.elapsedTime = task8.period;
+    task8.TickFct= &reset;
 	
     TimerSet(1);
     TimerOn();
