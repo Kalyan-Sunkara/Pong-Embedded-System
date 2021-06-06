@@ -95,80 +95,87 @@ unsigned char player2_score = 0x00;
 
 enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
 int menu(int state){
-	if(game_running != 1){
 		switch (state){
 		case wait1:	
 			if((~PINB & 0x01) == 0x01){
-				state = solo_state;	
+				state = ingame;	
 			}
 			else if((~PINB & 0x02) == 0x02){
-				state = duo_state;
+				state = ingame;
 			}
 			else{
 				state = wait1;	
 			}
 			break;
-		case solo_state:
-			if(~PINB == 0x00){
-				state = solo_state_wait;
-			}
-			else{
-				state = solo_state;	
-			}
-			break;
-		case solo_state_wait:
+		case ingame:
 			if(game_running == 0){
-				state = wait1;
+				state = wait1;	
 			}
 			else{
-				state = solo_state_wait;	
-			}
-			break;
-		case duo_state:
-			if(~PINB == 0x00){
-				state = duo_state_wait;
-			}
-			else{
-				state = duo_state;	
-			}
-			break;
-		case duo_state_wait:
-			if(game_running == 0){
-				state = wait1;
-			}
-			else{
-				state = duo_state_wait;	
+				state = ingame;	
 			}
 			break;
 		default:	
 			state = wait1;
 			break;
-	}	
+		}
+// 		case solo_state:
+// 			if(~PINB == 0x00){
+// 				state = solo_state_wait;
+// 			}
+// 			else{
+// 				state = solo_state;	
+// 			}
+// 			break;
+// 		case solo_state_wait:
+// 			if(game_running == 0){
+// 				state = wait1;
+// 			}
+// 			else{
+// 				state = solo_state_wait;	
+// 			}
+// 			break;
+// 		case duo_state:
+// 			if(~PINB == 0x00){
+// 				state = duo_state_wait;
+// 			}
+// 			else{
+// 				state = duo_state;	
+// 			}
+// 			break;
+// 		case duo_state_wait:
+// 			if(game_running == 0){
+// 				state = wait1;
+// 			}
+// 			else{
+// 				state = duo_state_wait;	
+// 			}
+// 			break;	
 	switch (state) {
 		case wait1:
 			duo = 0;
 			solo = 0;
 			game_running = 0;
 			break;
-		case solo_state:
-			solo = 1;
-			duo = 0;
-			game_running = 1;
+		case ingame:
 			break;
-		case solo_state_wait:
-			break;
-		case duo_state:
-			solo = 0;
-			duo = 1;
-			game_running = 1;
-			break;
-		case duo_state_wait:
-			break;
+// 		case solo_state:
+// 			solo = 1;
+// 			duo = 0;
+// 			game_running = 1;
+// 			break;
+// 		case solo_state_wait:
+// 			break;
+// 		case duo_state:
+// 			solo = 0;
+// 			duo = 1;
+// 			game_running = 1;
+// 			break;
+// 		case duo_state_wait:
+// 			break;
 		default:	
 			break;
 	}
-	}
-	else{}
 	return state;
 }
 enum Joystick_States {wait_for_game3, shift};
