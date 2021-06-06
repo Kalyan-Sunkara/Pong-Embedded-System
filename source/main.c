@@ -542,7 +542,7 @@ int game_SM(int state){
 		case hold:
 			paddle1_position_x = 0x80;
 			paddle2_position_x = 0x01;
-			ball_position_x = 0x04;
+			ball_position_x = 0x08;
 			paddle1_position_y = 0xF1;
 			paddle2_position_y = 0xF1;
 			ball_position_y = 0xFB;
