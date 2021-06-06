@@ -633,6 +633,36 @@ int LED_SM(int state){
 	}
 	return state;	
 }
+enum AI_states{wait_for_game4, follow, stay};
+int AI(int state){
+	switch(state){
+		case wait_for_game4:
+			if(pause == 1){
+				state = wait_for_game4;	
+			}
+			else{
+				state = stay;
+			}
+			break;
+		case follow:
+			break;
+		case stay:
+			break;
+		default:
+			break;	
+	}
+	switch(state){
+		case wait_for_game4:
+			break;
+		case follow:
+			break;
+		case stay:
+			break;
+		default:
+			break;
+	}
+	return state	
+}
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0xFC; PORTA = 0x03;
