@@ -93,7 +93,7 @@ unsigned char player1_score = 0x00;
 unsigned char player2_score = 0x00;
 // int goal = 0;
 
-enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
+enum menu_states {wait1, ingame};
 int menu(int state){
 		switch (state){
 		case wait1:	
