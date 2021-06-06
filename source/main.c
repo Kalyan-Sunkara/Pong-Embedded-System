@@ -87,9 +87,11 @@ unsigned char paddle2_right = 0xF7;
 unsigned char bottom = 0xEF;
 unsigned char top = 0xFE;
 
+int player1_scores_point = 0;
+int player2_scores_point = 0;
 int player1_score = 0;
 int player2_score = 0;
-int goal = 0;
+// int goal = 0;
 
 enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
 int menu(int state){
@@ -463,7 +465,9 @@ int ball_physics_Tick(int state) {
 		case score2:
 			state = wait_for_game;
 			break;
-				
+		default:
+			state = wait_for_game;
+			break;		
 	}
 	switch(state){
 		case wait_for_game:
@@ -491,12 +495,12 @@ int ball_physics_Tick(int state) {
 			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
 		case score1:
-			goal = 1;
-			player1_score +=1;
+// 			goal = 1;
+			player1_scores_point = 1;
 			break;
 		case score2:
-			goal = 1;
-			player2_score +=1;
+// 			goal = 1;
+			player2_scores_point = 1;
 			break;
 	}
 	return state;	
@@ -521,11 +525,23 @@ int game_SM(int state){
 			}
 			break;
 		case play:
-			if((player1_score == 3) || (player2_score == 3)){
-				state = win;	
+			if(player1_scores_point == 1){
+				player1_score = player1_score + 1;
+				if(player1_score == 3){
+					state = win;	
+				}
+				else{
+					state = hold;	
+				}
 			}
-			else if(goal == 1){
-				state = hold;	
+			else if(player2_scores_point == 1){
+				player2_score = player2_score + 1;
+				if(player2_score == 3){
+					state = win;	
+				}
+				else{
+					state = hold;	
+				}	
 			}
 			else{
 				state = play;
@@ -552,7 +568,9 @@ int game_SM(int state){
 			paddle2_left = 0xFD; 
 			paddle2_middle = 0xFB;
 			paddle2_right = 0xF7; 
-			goal = 0;
+			player1_scores_point = 0;
+			player2_scores_point = 0;
+// 			goal = 0;
 			pause = 1;
 			break;
 		case play:
