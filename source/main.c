@@ -315,7 +315,7 @@ int ball_physics_Tick(int state) {
 // 			}
 // 			break;
 		case ball_moving_left_straight:
-			if((ball_position_x == 0x08) && ((~ball_position_y) == (~paddle1_middle))){ //detects collision with middle of paddle
+			if((ball_position_x == 0x80) && ((~ball_position_y) == (~paddle1_middle))){ //detects collision with middle of paddle
 				state = ball_moving_right_straight;	
 			}
 			else{
