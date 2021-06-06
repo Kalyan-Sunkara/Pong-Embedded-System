@@ -395,11 +395,11 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_down;
 			}
-			else if(ball_position_y == top){
-				state = ball_moving_left_down;	
-			}
 			else if(ball_position_x == 0x80){
 				state = score2;	
+			}
+			else if(ball_position_y == top){
+				state = ball_moving_left_down;	
 			}
 			else{
 				state = ball_moving_left_up;	
