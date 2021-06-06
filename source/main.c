@@ -661,7 +661,7 @@ int AI(int state){
 		default:
 			break;
 	}
-	return state	
+	return state;	
 }
 int main(void) {
     /* Insert DDR and PORT initializations */
