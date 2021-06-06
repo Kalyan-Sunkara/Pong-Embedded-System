@@ -448,7 +448,7 @@ int ball_physics_Tick(int state) {
 			break;
 		case ball_moving_left_up:
 			ball_position_x <<=1;
-			ball_position = (ball_position_y >> 1) | 0x80;
+			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
 		case ball_moving_right_down:
 			ball_position_x >>=1;
