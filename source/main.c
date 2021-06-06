@@ -69,11 +69,19 @@ unsigned char solo = 0;
 unsigned char duo = 0;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
-// unsigned char ball_position_x = 0x04;
+unsigned char ball_position_x = 0x04;
 
 unsigned paddle1_position_y = 0xF1;
 unsigned paddle2_position_y = 0xF1;
-// unsigned char ball_position_y = 0xFB;
+unsigned char ball_position_y = 0xFB;
+
+unsigned char paddle1_left = 0x02;
+unsigned char paddle1_middle = 0x04;
+unsigned char paddle1_right = 0x08;
+
+unsigned char paddle2_left = 0x02; 
+unsigned char paddle2_middle = 0x04;
+unsigned char paddle2_right = 0x08; 
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -204,8 +212,14 @@ int Joystick_Tick(int state) {
 			sensor_value = ADC;
 			if (sensor_value < 450 && ((paddle2_position_y & 0x10) == 0x10)) { // Reset demo 
 				paddle2_position_y = ((paddle2_position_y  << 1) | 0x01);
+				paddle2_left << 1;
+				paddle2_middle << 1;
+				paddle2_right << 1;
 			}else if (sensor_value > 650 && (paddle2_position_y != 0xF8)) { // Move LED to start of next row
 				paddle2_position_y = ((paddle2_position_y  >> 1) | 0x80);
+				paddle2_left >> 1;
+				paddle2_middle >> 1;
+				paddle2_right >> 1;
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
@@ -258,6 +272,9 @@ int button_movement_Tick(int state) {
 		case shift_button_up:
 			if(paddle1_position_y != 0xF8) {
 				paddle1_position_y = ((paddle1_position_y>> 1) | 0x80);
+				paddle1_left >> 1;
+				paddle1_middle >> 1;
+				paddle1_right >> 1;
 			}
 			
 // 			PORTD = paddle1_position_y;
@@ -265,6 +282,9 @@ int button_movement_Tick(int state) {
 		case shift_button_down:
 			if((paddle1_position_y & 0x10) == 0x10) {
 				paddle1_position_y = ((paddle1_position_y<< 1) | 0x01);
+				paddle1_left << 1;
+				paddle1_middle << 1;
+				paddle1_right << 1;
 			}
 // 			PORTD = paddle1_position_y;
 			break;
@@ -274,16 +294,58 @@ int button_movement_Tick(int state) {
 	}
 	return state;
 }
-enum display_states{change1, change2};
+
+enum ball_physics{ball_moving_right, ball_moving_left};
+int ball_physics_Tick(int state) {
+	switch(state){
+		case ball_moving_right_straight:
+			if((ball_position_x == 0x01) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+				state = ball_moving_left_straight;	
+			}
+			else{
+				state = ball_moving_right_straight;	
+			}
+			break;
+// 		case ball_moving_right_angle_up:
+// 			if((ball_position_x == 0x01) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+// 				state = ball_moving_left_straight;	
+// 			}
+// 			else{
+// 				state = ball_moving_right_straight;	
+// 			}
+// 			break;
+		case ball_moving_left_straight:
+			if((ball_position_x == 0x08) && ((~ball_position_y) == (~paddle1_middle))){ //detects collision with middle of paddle
+				state = ball_moving_right_straight;	
+			}
+			else{
+				state = ball_moving_left_straight;	
+			}
+			break;	
+	}
+	switch(state){
+		case ball_moving_right_straight:
+			ball_position_x >>= 1;
+			break;
+		case ball_moving_right_straight:
+			ball_position_x <<= 1;
+			break;
+	}
+	return state;	
+}
+
+enum display_states{change1, change2, change3};
 int display(int state){
-	static unsigned char i = 0;
 	switch (state) {
 		case change1:	
 			state = change2;
 			break;
 		case change2:	
-			state = change1;
+			state = change3;
 			break;
+		case change3:	
+			state = change1;
+			break;	
 		default:	
 			state = change1;
 			break;
@@ -296,6 +358,10 @@ int display(int state){
 		case change2:
 			PORTC = paddle2_position_x;
 			PORTD = paddle2_position_y;
+			break;
+		case change3:
+			PORTC = ball_position_x;
+			PORTD = ball_position_y;
 			break;
 		default:	
 			break;
