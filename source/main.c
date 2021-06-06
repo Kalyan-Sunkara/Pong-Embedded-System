@@ -701,8 +701,13 @@ int LED_SM(int state){
 	}
 	switch(state){
 		case score_check:
-			PORTA = (PORTA | (player1_score << 2));
-			PORTA = (PORTA | (player2_score << 5));	
+			if(game_running == 1){
+				PORTA = (PORTA | (player1_score << 2));
+				PORTA = (PORTA | (player2_score << 5));	
+			}
+			else{
+				PORTA = (PORTA & 0x00);	
+			}
 			break;
 		default:
 			break;
