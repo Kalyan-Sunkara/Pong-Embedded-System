@@ -67,6 +67,7 @@ typedef struct task{
 unsigned char game_running = 0;
 unsigned char solo = 0;
 unsigned char duo = 0;
+unsigned char pause = 1;
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 unsigned char ball_position_x = 0x04;
@@ -85,6 +86,10 @@ unsigned char paddle2_right = 0xF7;
 
 unsigned char bottom = 0xEF;
 unsigned char top = 0xFE;
+
+int player1_score = 0;
+int player2_score = 0;
+int goal = 0;
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -121,7 +126,7 @@ unsigned char top = 0xFE;
 // 	PORTD = row;		// Row(s) displaying pattern	
 // 	return state;
 // }
-enum menu_states {wait, solo_state, solo_state_wait, duo_state, duo_state_wait};
+enum menu_states {wait1, solo_state, solo_state_wait, duo_state, duo_state_wait};
 int menu(int state){
 	if(game_running != 1){
 		switch (state){
@@ -199,12 +204,23 @@ int menu(int state){
 	else{}
 	return state;
 }
-enum Joystick_States {shift};
+enum Joystick_States {wait_for_game3, shift};
 int Joystick_Tick(int state) {
 	static unsigned short sensor_value = 0x00;
 // 	if(solo == 1){
 	switch (state) {
-		case shift:	
+		case wait_for_game3:
+			if(pause == 1){
+				state = wait_for_game3;	
+			}
+			else{
+				state = shift;	
+			}
+			break;
+		case shift:
+			if(pause == 1){
+				state = wait_for_game3'	
+			}
 			break;
 		default:	
 			state = shift;
@@ -227,19 +243,32 @@ int Joystick_Tick(int state) {
 			else { // Shift LED one spot to the right on current row
 			}
 			break;
+		case wait_for_game3:
+			break;
 		default:
 			break;
 	}
 // 	}
 	return state;
 }
-enum button_movement {shift_button_wait, shift_button_up, shift_button_down};
+enum button_movement {wait_for_game2, shift_button_wait, shift_button_up, shift_button_down};
 int button_movement_Tick(int state) {
 // 	static unsigned short sensor_value = 0x00;
 	
 	switch (state) {
+		case wait_for_game2:
+			if(pause == 1){
+				state = wait_for_game2;	
+			}
+			else{
+				state = shift_button_wait;	
+			}
+			break;
 		case shift_button_wait:	
-			if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
+			if(pause == 1){
+				state = wait_for_game2;	
+			}
+			else if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
 				state = shift_button_up;	
 			}
 			else if(((~PINB & 0x02) == 0x02) & ((~PINB & 0x01) != 0x01)){
@@ -250,7 +279,10 @@ int button_movement_Tick(int state) {
 			}
 			break;
 		case shift_button_up:
-			if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
+			if(pause == 1){
+				state = wait_for_game2;
+			}
+			else if(((~PINB & 0x01) == 0x01) & ((~PINB & 0x02) != 0x02)){
 				state = shift_button_up;	
 			}
 			else{
@@ -258,7 +290,10 @@ int button_movement_Tick(int state) {
 			}
 			break;
 		case shift_button_down:
-			if(((~PINB & 0x02) == 0x02) & ((~PINB & 0x01) != 0x01)){
+			if(pause == 1){
+				state = wait_for_game2;
+			}
+			else if(((~PINB & 0x02) == 0x02) & ((~PINB & 0x01) != 0x01)){
 				state = shift_button_down;	
 			}
 			else{
@@ -270,6 +305,8 @@ int button_movement_Tick(int state) {
 			break;
 	}	
 	switch (state) {
+		case wait_for_game2:
+			break;
 		case shift_button_wait:	
 			break;
 		case shift_button_up:
@@ -279,8 +316,6 @@ int button_movement_Tick(int state) {
 				paddle1_middle = ((paddle1_middle >> 1) | 0x80);
 				paddle1_right = ((paddle1_right >> 1) | 0x80);
 			}
-			
-// 			PORTD = paddle1_position_y;
 			break;
 		case shift_button_down:
 			if((paddle1_position_y & 0x10) == 0x10) {
@@ -289,7 +324,6 @@ int button_movement_Tick(int state) {
 				paddle1_middle = ((paddle1_middle << 1) | 0x01);
 				paddle1_right = ((paddle1_right << 1) | 0x01);
 			}
-// 			PORTD = paddle1_position_y;
 			break;
 			
 		default:	
@@ -298,9 +332,17 @@ int button_movement_Tick(int state) {
 	return state;
 }
 
-enum ball_physics{ball_moving_right_straight, ball_moving_right_up, ball_moving_right_down, ball_moving_left_up, ball_moving_left_down, ball_moving_left_straight};
+enum ball_physics{wait_for_game, score1, score2, ball_moving_right_straight, ball_moving_right_up, ball_moving_right_down, ball_moving_left_up, ball_moving_left_down, ball_moving_left_straight};
 int ball_physics_Tick(int state) {
 	switch(state){
+		case wait_for_game:
+			if(pause == 1){
+				state = wait_for_game;	
+			}
+			else{
+				state = ball_moving_right_straight;	
+			}
+			break;
 		case ball_moving_right_straight:
 			if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_middle))){ //detects collision with middle of paddle
 				state = ball_moving_left_straight;	
@@ -318,7 +360,7 @@ int ball_physics_Tick(int state) {
 				state = ball_moving_left_down;
 			}
 			else if(ball_position_x == 0x01){
-				state = reset	
+				state = score1;	
 			}
 			else{
 				state = ball_moving_right_straight;	
@@ -339,6 +381,9 @@ int ball_physics_Tick(int state) {
 			}
 			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_down;
+			}
+			else if(ball_position_x == 0x80){
+				state = score2;	
 			}
 			else{
 				state = ball_moving_left_straight;	
@@ -363,6 +408,9 @@ int ball_physics_Tick(int state) {
 			else if(ball_position_y == bottom){
 				state = ball_moving_left_up;	
 			}
+			else if(ball_position_x == 0x80){
+				state = score2;	
+			}
 			else{
 				state = ball_moving_left_down;	
 			}
@@ -385,6 +433,9 @@ int ball_physics_Tick(int state) {
 			}
 			else if(ball_position_y == top){
 				state = ball_moving_left_down;	
+			}
+			else if(ball_position_x == 0x80){
+				state = score2;	
 			}
 			else{
 				state = ball_moving_left_up;	
@@ -409,6 +460,9 @@ int ball_physics_Tick(int state) {
 			else if(ball_position_y == top){
 				state = ball_moving_right_down;	
 			}
+			else if(ball_position_x == 0x01){
+				state = score1;	
+			}
 			else{
 				state = ball_moving_right_up;	
 			}
@@ -432,13 +486,24 @@ int ball_physics_Tick(int state) {
 			else if(ball_position_y == bottom){
 				state = ball_moving_right_up;	
 			}
+			else if(ball_position_x == 0x01){
+				state = score1;	
+			}
 			else{
 				state = ball_moving_right_down;	
 			}
 			break;
-			
+		case score1:
+			state = wait_for_game;
+			break;
+		case score2:
+			state = wait_for_game;
+			break;
+				
 	}
 	switch(state){
+		case wait_for_game:
+			break;
 		case ball_moving_right_straight:
 			ball_position_x >>= 1;
 			break;
@@ -461,13 +526,94 @@ int ball_physics_Tick(int state) {
 			ball_position_x >>=1;
 			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
+		case score1:
+			goal = 1;
+			player1_score +=1
+			break;
+		case score2:
+			goal = 1;
+			player2_score +=1
+			break;
 	}
 	return state;	
 }
-
-enum display_states{change1, change2, change3};
+enum game_states{pre, hold, play, win);
+int game_SM(int state){
+	switch(state){
+		case pre:
+			if(game_running == 0){
+				state = pre;	
+			}
+			else{
+				state = hold;	
+			}
+			break;
+		case hold:
+			if((~PINB & 0x04) == 0x04){
+				state = play;	
+			}
+			else{
+				state = hold;	
+			}
+			break;
+		case play:
+			if((player1_score == 3) || (player2_score == 3)){
+				state = win;	
+			}
+			else if(goal == 1){
+				state = hold;	
+			}
+			else{
+				state = play;
+			}
+			break;
+		case win:
+			state = pre;
+			break
+			
+	}
+	switch(state){
+		case pre:
+			break;
+		case hold:
+			paddle1_position_x = 0x80;
+			paddle2_position_x = 0x01;
+			ball_position_x = 0x04;
+			paddle1_position_y = 0xF1;
+			paddle2_position_y = 0xF1;
+			ball_position_y = 0xFB;
+			paddle1_left = 0xFD;
+			paddle1_middle = 0xFB;
+			paddle1_right = 0xF7;
+			paddle2_left = 0xFD; 
+			paddle2_middle = 0xFB;
+			paddle2_right = 0xF7; 
+			goal = 0;
+			pause = 1;
+			break;
+		case play:
+			pause = 0;
+			break;
+		case win:
+			game_running = 0;
+			player1_score = 0;
+			player2_score = 0;
+			pause = 1;
+			break	
+	}
+	return state;
+}
+enum display_states{menu_display, change1, change2, change3};
 int display(int state){
 	switch (state) {
+		case menu_diplay:
+			if(game_running == 0){
+				state = menu_display;	
+			}
+			else{
+				state = change1;	
+			}
+			break;
 		case change1:	
 			state = change2;
 			break;
@@ -482,9 +628,12 @@ int display(int state){
 			break;
 	}	
 	switch (state) {
+		case menu_display:
+			PORTC = 0xFF;
+			PORTD = 0x00;
+			break;
+			
 		case change1:
-// 			PORTC = 0xFF;
-// 			PORTD = 0x00;
 			PORTC = paddle1_position_x;
 			PORTD = paddle1_position_y;
 			break;
@@ -518,15 +667,18 @@ int main(void) {
     static task task2;
     static task task3;
     static task task4;
+    static task task5;
+    static task task6;
 	
-    task *tasks[] = {&task1, &task2, &task3, &task4};
+    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
+	
     task1.state = start;
-    task1.period = 150;
+    task1.period = 200;
     task1.elapsedTime = task1.period;
-    task1.TickFct = &Joystick_Tick;
+    task1.TickFct= &menu
     
     task2.state = start;
     task2.period = 150;
@@ -539,9 +691,19 @@ int main(void) {
     task3.TickFct = &ball_physics_Tick;
 	
     task4.state = start;
-    task4.period = 1;
+    task4.period = 150;
     task4.elapsedTime = task4.period;
-    task4.TickFct = &display;
+    task4.TickFct = &game_states;
+	
+    task5.state = start;
+    task5.period = 150;
+    task5.elapsedTime = task5.period;
+    task5.TickFct = &Joystick_Tick;
+    
+    task6.state = start;
+    task6.period = 1;
+    task6.elapsedTime = task6.period;
+    task6.TickFct = &display;
 	
     TimerSet(1);
     TimerOn();
