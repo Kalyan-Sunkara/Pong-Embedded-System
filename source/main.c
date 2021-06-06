@@ -299,7 +299,7 @@ enum ball_physics{ball_moving_right_straight, ball_moving_left_straight};
 int ball_physics_Tick(int state) {
 	switch(state){
 		case ball_moving_right_straight:
-			if((ball_position_x == 0x01) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+			if((ball_position_x == 0x01) || ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
 				state = ball_moving_left_straight;	
 			}
 			else{
