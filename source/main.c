@@ -84,7 +84,7 @@ unsigned char paddle2_middle = 0xFB;
 unsigned char paddle2_right = 0xF7; 
 
 unsigned char bottom = 0xEF;
-unsigned char top = 0xFE
+unsigned char top = 0xFE;
 // enum Demo_States {shift};
 // int Demo_Tick(int state) {
 
@@ -444,7 +444,7 @@ int ball_physics_Tick(int state) {
 			break;
 		case ball_moving_left_down:
 			ball_position_x <<=1;
-			ball_position = (ball_position_y << 1) | 0x01;
+			ball_position_y = (ball_position_y << 1) | 0x01;
 			break;
 		case ball_moving_left_up:
 			ball_position_x <<=1;
@@ -452,11 +452,11 @@ int ball_physics_Tick(int state) {
 			break;
 		case ball_moving_right_down:
 			ball_position_x >>=1;
-			ball_position = (ball_position_y << 1) | 0x01;
+			ball_position_y = (ball_position_y << 1) | 0x01;
 			break;
 		case ball_moving_right_up:
 			ball_position_x >>=1;
-			ball_position = (ball_position_y >> 1) | 0x80;
+			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
 	}
 	return state;	
