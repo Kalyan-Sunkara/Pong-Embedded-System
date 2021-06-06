@@ -797,7 +797,7 @@ int main(void) {
     task8.state = start;
     task8.period = 100;
     task8.elapsedTime = task8.period;
-    task8.TickFct= &reset;
+    task8.TickFct = &reset_SM;
 	
     TimerSet(1);
     TimerOn();
