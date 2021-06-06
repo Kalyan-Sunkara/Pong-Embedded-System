@@ -221,8 +221,8 @@ int Joystick_Tick(int state) {
 			}else if (sensor_value > 650 && (paddle2_position_y != 0xF8)) { // Move LED to start of next row
 				paddle2_position_y = ((paddle2_position_y  >> 1) | 0x80);
 				paddle2_left = ((paddle2_left >> 1) | 0x80);
-				paddle2_middle = ((paddle2_middle >> 1 | 0x80);
-				paddle2_right = ((paddle2_right >> 1 | 0x80);
+				paddle2_middle = ((paddle2_middle >> 1) | 0x80);
+				paddle2_right = ((paddle2_right >> 1) | 0x80);
 			} 
 			else { // Shift LED one spot to the right on current row
 			}
@@ -287,7 +287,7 @@ int button_movement_Tick(int state) {
 				paddle1_position_y = ((paddle1_position_y<< 1) | 0x01);
 				paddle1_left = ((paddle1_left << 1) | 0x01);
 				paddle1_middle = ((paddle1_middle << 1) | 0x01);
-				paddle1_right = ((paddle1_right << 1 | 0x01);
+				paddle1_right = ((paddle1_right << 1) | 0x01);
 			}
 // 			PORTD = paddle1_position_y;
 			break;
