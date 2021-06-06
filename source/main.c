@@ -511,7 +511,7 @@ int ball_physics_Tick(int state) {
 	}
 	return state;	
 }
-enum game_states{pre, hold, play, win};
+enum game_states{pre, hold, play, win, win_hold};
 int game_SM(int state){
 	switch(state){
 		case pre:
