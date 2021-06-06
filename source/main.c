@@ -554,7 +554,6 @@ int main(void) {
 	    }
 	while(!TimerFlag);
 	TimerFlag = 0;
->>>>>>> 2a706cd78eb411ec60fb2bfcef6a8ee72398e67e
     }
     return 1;
 }
