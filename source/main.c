@@ -567,6 +567,8 @@ int game_SM(int state){
 	}
 	switch(state){
 		case pre:
+			player1_score = 0x00;
+			player2_score = 0x00;
 			break;
 		case hold:
 			paddle1_position_x = 0x80;
@@ -591,13 +593,23 @@ int game_SM(int state){
 			break;
 		case win:
 // 			game_running = 0;
-			player1_score = 0x00;
-			player2_score = 0x00;
 			player1_scores_point = 0;
 			player2_scores_point = 0;
 			pause = 1;
 			break;	
 		case win_hold:
+			paddle1_position_x = 0x80;
+			paddle2_position_x = 0x01;
+			ball_position_x = 0x08;
+			paddle1_position_y = 0xF1;
+			paddle2_position_y = 0xF1;
+			ball_position_y = 0xFB;
+			paddle1_left = 0xFD;
+			paddle1_middle = 0xFB;
+			paddle1_right = 0xF7;
+			paddle2_left = 0xFD; 
+			paddle2_middle = 0xFB;
+			paddle2_right = 0xF7; 
 			break;
 	}
 	return state;
