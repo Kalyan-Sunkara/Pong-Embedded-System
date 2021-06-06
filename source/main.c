@@ -317,6 +317,9 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
 				state = ball_moving_left_down;
 			}
+			else if(ball_position_x == 0x01){
+				state = reset	
+			}
 			else{
 				state = ball_moving_right_straight;	
 			}
@@ -521,12 +524,12 @@ int main(void) {
     const char start = 0;
     
     task1.state = start;
-    task1.period = 200;
+    task1.period = 150;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Joystick_Tick;
     
     task2.state = start;
-    task2.period = 200;
+    task2.period = 150;
     task2.elapsedTime = task2.period;
     task2.TickFct = &button_movement_Tick;
     
