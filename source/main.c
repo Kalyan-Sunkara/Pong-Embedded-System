@@ -503,11 +503,9 @@ int ball_physics_Tick(int state) {
 			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
 		case score1:
-// 			goal = 1;
 			player1_scores_point = 1;
 			break;
 		case score2:
-// 			goal = 1;
 			player2_scores_point = 1;
 			break;
 	}
@@ -780,27 +778,28 @@ int main(void) {
     task2.period = 150;
     task2.elapsedTime = task2.period;
     task2.TickFct = &game_SM;
- 
-    task3.state = start;
-    task3.period = 200;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &ball_physics_Tick;
 	
+    task3.state = start;
+    task3.period = 1;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &display;
+ 
     task4.state = start;
-    task4.period = 150;
+    task4.period = 200;
     task4.elapsedTime = task4.period;
-    task4.TickFct = &button_movement_Tick;
-    
+    task4.TickFct = &ball_physics_Tick;
 	
     task5.state = start;
     task5.period = 150;
     task5.elapsedTime = task5.period;
-    task5.TickFct = &Joystick_Tick;
+    task5.TickFct = &button_movement_Tick;
     
+	
     task6.state = start;
-    task6.period = 1;
+    task6.period = 150;
     task6.elapsedTime = task6.period;
-    task6.TickFct = &display;
+    task6.TickFct = &Joystick_Tick;
+    
     
     task7.state = start;
     task7.period = 100;
