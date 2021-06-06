@@ -614,9 +614,28 @@ int display(int state){
 	}	
 	return state;	
 }
-	
+enum LED_STATES{score_check};
+int LED_SM(int state){
+	switch(state){
+		case score_check:
+			state = score_check;
+			break;
+		default:
+			state = score_check;
+	}
+	switch(state){
+		case score_check:
+			PORTA = (PORTA | (player1_score << 2));
+			PORTA = (PORTA | (player2_score << 5));	
+			break;
+		default:
+			break;
+	}
+	return state;	
+}
 int main(void) {
     /* Insert DDR and PORT initializations */
+    DDRA = 0xFC; PORTA = 0x03;
     DDRB = 0x00; PORTB = 0xFF;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
@@ -633,8 +652,9 @@ int main(void) {
     static task task4;
     static task task5;
     static task task6;
+    static task task7;
 	
-    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6};
+    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6, &task7};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -668,6 +688,11 @@ int main(void) {
     task6.period = 1;
     task6.elapsedTime = task6.period;
     task6.TickFct = &display;
+    
+    task7.state = start;
+    task7.period = 100;
+    task7.elapsedTime = task7.period;
+    task7.TickFct = &LED_SM;
 	
     TimerSet(1);
     TimerOn();
