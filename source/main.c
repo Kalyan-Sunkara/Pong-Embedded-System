@@ -283,8 +283,12 @@ int button_movement_Tick(int state) {
 	return state;
 }
 
-enum ball_physics{wait_for_game, score1, score2, ball_moving_right_straight, ball_moving_right_up, ball_moving_right_down, ball_moving_left_up, ball_moving_left_down, ball_moving_left_straight};
+enum ball_physics{wait_for_game, score1, score2, ball_moving_right_straight, ball_moving_right_up, ball_moving_right_down, ball_moving_left_up, ball_moving_left_down, ball_moving_left_straight, spin_left_up, spin_left_down, spin_right_up, spin_right_down};
 int ball_physics_Tick(int state) {
+	static unsigned int spin_right_up_flag = 0;
+	static unsigned int spin_left_up_flag = 0;
+	static unsigned int spin_left_down_flag = 0;
+	static unsigned int spin_right_down_flag = 0;
 	switch(state){
 		case wait_for_game:
 			if(pause == 1){
@@ -313,6 +317,12 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
 				state = ball_moving_left_down;
 			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_right)){
+				state = spin_left_up;	
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_left)){
+				state = spin_left_down;	
+			}
 			else if(ball_position_x == 0x01){
 				state = score1;	
 			}
@@ -336,6 +346,12 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_down;
 			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_right)){
+				state = spin_right_up;	
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_left)){
+				state = spin_right_down;	
+			}
 			else if(ball_position_x == 0x80){
 				state = score2;	
 			}
@@ -358,6 +374,12 @@ int ball_physics_Tick(int state) {
 			}
 			else if((ball_position_x == 0x40) && ((~ball_position_y) == (~paddle1_right))){
 				state = ball_moving_right_down;
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_right)){
+				state = spin_right_up;	
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_left)){
+				state = spin_right_down;	
 			}
 			else if(ball_position_x == 0x80){
 				state = score2;	
@@ -385,6 +407,12 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
 				state = ball_moving_right_down;
 			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_right)){
+				state = spin_right_up;	
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_left)){
+				state = spin_right_down;	
+			}
 			else if(ball_position_x == 0x80){
 				state = score2;	
 			}
@@ -410,6 +438,12 @@ int ball_physics_Tick(int state) {
 			}
 			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
 				state = ball_moving_left_down;
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_right)){
+				state = spin_left_up;	
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_left)){
+				state = spin_left_down;	
 			}
 			else if(ball_position_x == 0x01){
 				state = score1;	
@@ -437,6 +471,12 @@ int ball_physics_Tick(int state) {
 			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
 				state = ball_moving_left_down;
 			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_right)){
+				state = spin_left_up;	
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_left)){
+				state = spin_left_down;	
+			}
 			else if(ball_position_x == 0x01){
 				state = score1;	
 			}
@@ -445,6 +485,134 @@ int ball_physics_Tick(int state) {
 			}
 			else{
 				state = ball_moving_right_down;	
+			}
+			break;
+		case spin_right_up:
+			if((ball_position_x == 0x02) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+				state = ball_moving_left_straight;	
+			}
+			else if((ball_position_x == 0x02) && (ball_position_y == top) && ((ball_position_y) == (paddle2_left))){
+				state = ball_moving_left_down;
+			}
+			else if((ball_position_x == 0x02) && ((~ball_position_y) == (~paddle2_left))){
+				state = ball_moving_left_up;
+			}
+			else if((ball_position_x == 0x02) && (ball_position_y == bottom) && ((ball_position_y) == (paddle2_right))){
+				state = ball_moving_left_up;
+			}
+			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
+				state = ball_moving_left_down;
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_left)){
+				state = spin_left_down;	
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_right)){
+				state = spin_left_up;	
+			}
+			else if(ball_position_x == 0x01){
+				state = score1;	
+			}
+			else if(ball_position_y == top){
+				state = ball_moving_right_down;	
+			}
+			else{
+				state = spin_right_up;	
+			}
+			break;
+		case spin_right_down:
+			if((ball_position_x == 0x02) && ((~ball_position_y) == (~paddle2_middle))){ //detects collision with middle of paddle
+				state = ball_moving_left_straight;	
+			}
+			else if((ball_position_x == 0x02) && (ball_position_y == 0xFE) && ((~ball_position_y) == (~paddle2_left))){
+				state = ball_moving_left_down;
+			}
+			else if((ball_position_x == 0x02) && ((~ball_position_y) == (~paddle2_left))){
+				state = ball_moving_left_up;
+			}
+			else if((ball_position_x == 0x02) && (ball_position_y == 0xEF) && ((~ball_position_y) == (~paddle2_right))){
+				state = ball_moving_left_up;
+			}
+			else if((ball_position_x == 0x02) && ((ball_position_y) == (paddle2_right))){
+				state = ball_moving_left_down;
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_left)){
+				state = spin_left_down;	
+			}
+			else if((ball_position_x == 0x01) && (ball_position_y == paddle2_right)){
+				state = spin_left_up;	
+			}
+			else if(ball_position_x == 0x01){
+				state = score1;	
+			}
+			else if(ball_position_y == bottom){
+				state = ball_moving_right_up;	
+			}
+			else{
+				state = spin_right_down;	
+			}
+			break;
+		case spin_left_down:
+			if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_middle))){ //detects collision with middle of paddle
+				state = ball_moving_right_straight;	
+			}
+			else if((ball_position_x == 0x40) && (ball_position_y == top) && ((ball_position_y) == (paddle1_left))){
+				state = ball_moving_right_down;
+			}
+			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_left))){
+				state = ball_moving_right_up;
+			}
+			else if((ball_position_x == 0x40) && (ball_position_y == bottom) && ((ball_position_y) == (paddle1_right))){
+				state = ball_moving_right_up;
+			}
+			else if((ball_position_x == 0x40) && ((~ball_position_y) == (~paddle1_right))){
+				state = ball_moving_right_down;
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_left)){
+				state = spin_right_down;	
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_right)){
+				state = spin_right_up;	
+			}
+			else if(ball_position_x == 0x80){
+				state = score2;	
+			}
+			else if(ball_position_y == bottom){
+				state = ball_moving_left_up;	
+			}
+			else{
+				state = spin_left_down;	
+			}
+			break;
+		case spin_left_up:
+			if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_middle))){ //detects collision with middle of paddle
+				state = ball_moving_right_straight;	
+			}
+			else if((ball_position_x == 0x40) && (ball_position_y == top) && ((ball_position_y) == (paddle1_left))){
+				state = ball_moving_right_down;
+			}
+			else if((ball_position_x == 0x40) && ((~ball_position_y) == (~paddle1_left))){
+				state = ball_moving_right_up;
+			}
+			else if((ball_position_x == 0x40) && (ball_position_y == bottom) && ((ball_position_y) == (paddle1_right))){
+				state = ball_moving_right_up;
+			}
+			else if((ball_position_x == 0x40) && ((ball_position_y) == (paddle1_right))){
+				state = ball_moving_right_down;
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_left)){
+				state = spin_right_down;	
+			}
+			else if((ball_position_x == 0x80) && (ball_position_y == paddle1_right)){
+				state = spin_right_up;	
+			}
+			else if(ball_position_x == 0x80){
+				state = score2;	
+			}
+			else if(ball_position_y == top){
+				state = ball_moving_left_down;	
+			}
+			else{
+				state = ball_moving_left_up;	
 			}
 			break;
 		case score1:
@@ -487,6 +655,54 @@ int ball_physics_Tick(int state) {
 			speed = 165;
 			ball_position_x >>=1;
 			ball_position_y = (ball_position_y >> 1) | 0x80;
+			break;
+		case spin_left_up:
+			speed = 190;
+			if(spin_left_up_flag == 0){
+				ball_position_x <<=1;
+				spin_left_up_flag = 1;
+			}
+			else{
+				ball_position_x <<= 1;
+				ball_position_y = (ball_position_y >> 1) | 0x80;
+				spin_left_up_flag = 0;
+			}
+			break;
+		case spin_left_down:
+			speed = 190;
+			if(spin_left_down_flag == 0){
+				ball_position_x <<= 1;
+				spin_left_down_flag = 1;
+			}
+			else{
+				ball_position_x <<= 1;
+				ball_position_y = (ball_position_y << 1) | 0x01;
+				spin_left_down_flag = 0;
+			}
+			break;
+		case spin_right_down:
+			speed = 190;
+			if(spin_right_up_flag == 0){
+				ball_position_x >>=1;
+				spin_right_down_flag = 1;
+			}
+			else{
+				ball_position_x >>=1;
+				ball_position_y = (ball_position_y << 1) | 0x01;
+				spin_right_down_flag = 0;
+			}
+			break;
+		case spin_right_up:
+			speed = 190;
+			if(spin_right_up_flag == 0){
+				ball_position_x >>=1;
+				spin_right_up_flag = 1;
+			}
+			else{
+				ball_position_x >>=1;
+				ball_position_y = (ball_position_y >> 1) | 0x80;
+				spin_right_up_flag = 0;
+			}
 			break;
 		case score1:
 			player1_scores_point = 1;
