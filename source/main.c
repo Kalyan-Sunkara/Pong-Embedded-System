@@ -133,16 +133,19 @@ int menu(int state){
 			duo = 0;
 			solo = 0;
 			game_running = 0;
+			PORTB = (PORTB | 0x10);
 			break;
 		case solo_ingame:
 			solo = 1;
 			duo = 0;
 			game_running = 1;
+			PORTB = (PORTB | 0x20);
 			break;
 		case duo_ingame:
 			solo = 0;
 			duo = 1;
 			game_running = 1;
+			PORTB = (PORTB | 0x40);
 			break;
 		default:	
 			break;
@@ -715,7 +718,10 @@ int AI(int state){
 			}
 			break;
 		case follow:
-			if((rand() % 2) == 1){
+			if((pause == 1) || (solo == 0)){
+				state = wait_for_game4;	
+			}
+			else if((rand() % 2) == 1){
 				state = stay;	
 			}
 			else{
@@ -723,7 +729,10 @@ int AI(int state){
 			}
 			break;
 		case stay:
-			if((rand() % 2) == 0){
+			if((pause == 1) || (solo == 0)){
+				state = wait_for_game4;	
+			}
+			else if((rand() % 2) == 0){
 				state = follow;	
 			}
 			else{
@@ -760,7 +769,7 @@ int AI(int state){
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0xFC; PORTA = 0x03;
-    DDRB = 0x00; PORTB = 0xFF;
+    DDRB = 0xF0; PORTB = 0x0F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 	
