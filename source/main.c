@@ -93,6 +93,8 @@ int player1_scores_point = 0;
 int player2_scores_point = 0;
 unsigned char player1_score = 0x00;
 unsigned char player2_score = 0x00;
+
+int win = 0;
 // int goal = 0;
 
 enum menu_states {wait1, solo_ingame, duo_ingame};
@@ -576,6 +578,7 @@ int game_SM(int state){
 			player1_scores_point = 0;
 			player2_scores_point = 0;
 			pause = 1;
+			win = 1;
 			break;	
 		case win_hold:
 			paddle1_position_x = 0x80;
@@ -594,12 +597,26 @@ int game_SM(int state){
 	}
 	return state;
 }
-enum display_states{menu_display, change1, change2, change3};
+enum display_states{menu_display, win_display, change1, change2, change3};
 int display(int state){
 	switch (state) {
 		case menu_display:
 			if(game_running == 0){
 				state = menu_display;	
+			}
+			else if(win == 1){
+				state = win_display
+			}
+			else{
+				state = change1;	
+			}
+			break;
+		case win_display:
+			if(game_running == 0){
+				state = menu_display;	
+			}
+			else if(win == 1){
+				state = win_display
 			}
 			else{
 				state = change1;	
@@ -609,6 +626,9 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
+			else if(win == 1){
+				state = win_display
+			}
 			else{
 				state = change2;
 			}
@@ -617,6 +637,9 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
+			else if(win == 1){
+				state = win_display
+			}
 			else{
 				state = change3;
 			}
@@ -624,6 +647,9 @@ int display(int state){
 		case change3:	
 			if(game_running == 0){
 				state = menu_display;	
+			}
+			else if(win == 1){
+				state = win_display
 			}
 			else{
 				state = change1;
@@ -638,7 +664,10 @@ int display(int state){
 			PORTC = 0xFF;
 			PORTD = 0x00;
 			break;
-			
+		case win_display:
+			PORTC = 0xAA;
+			PORTD = 0x00
+			break;
 		case change1:
 			PORTC = paddle1_position_x;
 			PORTD = paddle1_position_y;
@@ -683,6 +712,7 @@ int reset_SM(int state){
 			player2_score = 0x00;
 			player1_scores_point = 0;
 			player2_scores_point = 0;
+			win = 0;
 			break;	
 		default:
 			break;
@@ -844,7 +874,7 @@ int main(void) {
     task8.TickFct = &reset_SM;
     
     task9.state = start;
-    task9.period = 200;
+    task9.period = 150;
     task9.elapsedTime = task9.period;
     task9.TickFct = &AI;
 	
