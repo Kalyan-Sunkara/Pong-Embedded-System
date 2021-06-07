@@ -65,10 +65,10 @@ typedef struct task{
     int (*TickFct)(int);
 } task;
 
-unsigned char game_running = 0;
-unsigned char solo = 0;
-unsigned char duo = 0;
-unsigned char pause = 1;
+unsigned char game_running = 0; //flag for game status
+unsigned char solo = 0; //flag for solo mode
+unsigned char duo = 0; //flag for duo mode
+unsigned char pause = 1; //flag to pause game without ending game
 unsigned char paddle1_position_x = 0x80;
 unsigned char paddle2_position_x = 0x01;
 unsigned char ball_position_x = 0x04;
@@ -76,30 +76,30 @@ unsigned char ball_position_x = 0x04;
 unsigned paddle1_position_y = 0xF1;
 unsigned paddle2_position_y = 0xF1;
 unsigned char ball_position_y = 0xFB;
-unsigned long int speed = 175;
+unsigned long int speed = 175; //variable used to alter period of ball movement
 
-unsigned char paddle1_left = 0xFD;
-unsigned char paddle1_middle = 0xFB;
-unsigned char paddle1_right = 0xF7;
+unsigned char paddle1_left = 0xFD; //tracks left led of paddle 1
+unsigned char paddle1_middle = 0xFB; //tracks middle led of paddle 1
+unsigned char paddle1_right = 0xF7; //tracks right led of paddle 1
 
-unsigned char paddle2_left = 0xFD; 
-unsigned char paddle2_middle = 0xFB;
-unsigned char paddle2_right = 0xF7; 
+unsigned char paddle2_left = 0xFD; //tracks left led oof paddle 2
+unsigned char paddle2_middle = 0xFB; //tracks middle led of paddle 2
+unsigned char paddle2_right = 0xF7; //tracks right led of paddle 2
 
-unsigned char bottom = 0xEF;
-unsigned char top = 0xFE;
+unsigned char bottom = 0xEF; //bottom of led board
+unsigned char top = 0xFE; //top of led board
 
-int player1_scores_point = 0;
-int player2_scores_point = 0;
-unsigned char player1_score = 0x00;
-unsigned char player2_score = 0x00;
+int player1_scores_point = 0; //flag to see if player 1 scored
+int player2_scores_point = 0; //flag to see if player 2 scored
+unsigned char player1_score = 0x00; //player 1 score
+unsigned char player2_score = 0x00; //player 2 scoree
 
-int go_right = 0;
-int win_display_flag = 0;
+int go_right = 0; //checks which direrction ball should begin going
+int win_display_flag = 0; //flag to indicate win screeen is shown
 // int goal = 0;
 
-enum menu_states {wait1, solo_ingame, duo_ingame};
-int menu(int state){
+enum menu_states {wait1, solo_ingame, duo_ingame}; 
+int menu(int state){ //state machine that handles the menu
 		switch (state){
 		case wait1:	
 			if((~PINB & 0x01) == 0x01){
@@ -157,7 +157,7 @@ int menu(int state){
 	return state;
 }
 enum Joystick_States {wait_for_game3, shift};
-int Joystick_Tick(int state) {
+int Joystick_Tick(int state) { //state machine that handles the joystick functionality
 	static unsigned short sensor_value = 0x00;
 // 	if(solo == 1){
 	switch (state) {
@@ -204,7 +204,7 @@ int Joystick_Tick(int state) {
 	return state;
 }
 enum button_movement {wait_for_game2, shift_button_wait, shift_button_up, shift_button_down};
-int button_movement_Tick(int state) {
+int button_movement_Tick(int state) { //state machine that handles the button movement functionality
 // 	static unsigned short sensor_value = 0x00;
 	switch (state) {
 		case wait_for_game2:
@@ -284,7 +284,7 @@ int button_movement_Tick(int state) {
 }
 
 enum ball_physics{wait_for_game, score1, score2, ball_moving_right_straight, ball_moving_right_up, ball_moving_right_down, ball_moving_left_up, ball_moving_left_down, ball_moving_left_straight, spin_left_up, spin_left_down, spin_right_up, spin_right_down};
-int ball_physics_Tick(int state) {
+int ball_physics_Tick(int state) { //state machine for the ball physics: speed, spin, collision, etc.
 	static unsigned int spin_right_up_flag = 0;
 	static unsigned int spin_left_up_flag = 0;
 	static unsigned int spin_left_down_flag = 0;
@@ -714,7 +714,7 @@ int ball_physics_Tick(int state) {
 	return state;	
 }
 enum game_states{pre, hold, play, win, win_hold};
-int game_SM(int state){
+int game_SM(int state){ //state machine that handles the in progress game rules
 	switch(state){
 		case pre:
 			if(game_running == 0){
@@ -820,7 +820,7 @@ int game_SM(int state){
 	return state;
 }
 enum display_states{menu_display, win_display, change1, change2, change3};
-int display(int state){
+int display(int state){ //state machine that handles all display to PORTC and PORTD(LED BOARD)
 	switch (state) {
 		case menu_display:
 			if(game_running == 0){
@@ -908,7 +908,7 @@ int display(int state){
 	return state;	
 }
 enum reset_states{wait_reset, reset};
-int reset_SM(int state){
+int reset_SM(int state){ //state machine that handles the soft reset
 	switch(state){
 		case wait_reset:
 			if((~PINB & 0x08) == 0x08){
@@ -942,7 +942,7 @@ int reset_SM(int state){
 	return state;
 }
 enum LED_STATES{score_check};
-int LED_SM(int state){
+int LED_SM(int state){ //state machine that handles the score keeping LEDS
 	switch(state){
 		case score_check:
 			state = score_check;
@@ -966,7 +966,7 @@ int LED_SM(int state){
 	return state;	
 }
 enum AI_states{wait_for_game4, follow, stay};
-int AI(int state){
+int AI(int state){ //state machine that handles the AI functionality
 	switch(state){
 		case wait_for_game4:
 			if((pause == 1) || (solo == 0)){
@@ -1120,39 +1120,3 @@ int main(void) {
     }
     return 1;
 }	 
-// enum Demo_States {shift};
-// int Demo_Tick(int state) {
-
-// 	// Local Variables
-// 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
-// 	static unsigned char row = 0xFE;  	// Row(s) displaying pattern. 
-// 							// 0: display pattern on row
-// 							// 1: do NOT display pattern on row
-// 	// Transitions
-// 	switch (state) {
-// 		case shift:	
-// 			break;
-// 		default:	
-// 			state = shift;
-// 			break;
-// 	}	
-// 	// Actions
-// 	switch (state) {
-// 		case shift:	
-// 			if (row == 0xEF && pattern == 0x01) { // Reset demo 
-// 				pattern = 0x80;		    
-// 				row = 0xFE;
-// 			} else if (pattern == 0x01) { // Move LED to start of next row
-// 				pattern = 0x80;
-// 				row = (row << 1) | 0x01;
-// 			} else { // Shift LED one spot to the right on current row
-// 				pattern >>= 1;
-// 			}
-// 			break;
-// 		default:
-// 			break;
-// 	}
-// 	PORTC = pattern;	// Pattern to display
-// 	PORTD = row;		// Row(s) displaying pattern	
-// 	return state;
-// }
