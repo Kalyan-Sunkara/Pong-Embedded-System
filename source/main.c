@@ -76,6 +76,7 @@ unsigned char ball_position_x = 0x04;
 unsigned paddle1_position_y = 0xF1;
 unsigned paddle2_position_y = 0xF1;
 unsigned char ball_position_y = 0xFB;
+unsigned long int speed = 175;
 
 unsigned char paddle1_left = 0xFD;
 unsigned char paddle1_middle = 0xFB;
@@ -454,24 +455,30 @@ int ball_physics_Tick(int state) {
 		case wait_for_game:
 			break;
 		case ball_moving_right_straight:
+			speed = 200;
 			ball_position_x >>= 1;
 			break;
 		case ball_moving_left_straight:
+			speed = 200;
 			ball_position_x <<= 1;
 			break;
 		case ball_moving_left_down:
+			speed = 165;
 			ball_position_x <<=1;
 			ball_position_y = (ball_position_y << 1) | 0x01;
 			break;
 		case ball_moving_left_up:
+			speed = 165;
 			ball_position_x <<=1;
 			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
 		case ball_moving_right_down:
+			speed = 165;
 			ball_position_x >>=1;
 			ball_position_y = (ball_position_y << 1) | 0x01;
 			break;
 		case ball_moving_right_up:
+			speed = 165;
 			ball_position_x >>=1;
 			ball_position_y = (ball_position_y >> 1) | 0x80;
 			break;
@@ -847,6 +854,9 @@ int main(void) {
     unsigned short x;
     while (1) {
           for(x = 0; x < numTasks; x++){
+		    if(x == 3){
+			 tasks[3]->period = speed;   
+		    }
 		    if(tasks[x]->elapsedTime == tasks[x]->period){
 			    tasks[x]->state = tasks[x]->TickFct(tasks[x]->state);
 			    tasks[x]->elapsedTime = 0;
