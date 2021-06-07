@@ -94,7 +94,7 @@ int player2_scores_point = 0;
 unsigned char player1_score = 0x00;
 unsigned char player2_score = 0x00;
 
-int win = 0;
+int win_display_flag = 0;
 // int goal = 0;
 
 enum menu_states {wait1, solo_ingame, duo_ingame};
@@ -578,7 +578,7 @@ int game_SM(int state){
 			player1_scores_point = 0;
 			player2_scores_point = 0;
 			pause = 1;
-			win = 1;
+			win_display_flag = 1;
 			break;	
 		case win_hold:
 			paddle1_position_x = 0x80;
@@ -604,8 +604,8 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win == 1){
-				state = win_display
+			else if(win_display_flag == 1){
+				state = win_display;
 			}
 			else{
 				state = change1;	
@@ -615,8 +615,8 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win == 1){
-				state = win_display
+			else if(win_display_flag = 1 == 1){
+				state = win_display;
 			}
 			else{
 				state = change1;	
@@ -626,8 +626,8 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win == 1){
-				state = win_display
+			else if(win_display_flag == 1){
+				state = win_display;
 			}
 			else{
 				state = change2;
@@ -637,8 +637,8 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win == 1){
-				state = win_display
+			else if(win_display_flag == 1){
+				state = win_display;
 			}
 			else{
 				state = change3;
@@ -648,8 +648,8 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win == 1){
-				state = win_display
+			else if(win_display_flag = 1){
+				state = win_display;
 			}
 			else{
 				state = change1;
@@ -666,7 +666,7 @@ int display(int state){
 			break;
 		case win_display:
 			PORTC = 0xAA;
-			PORTD = 0x00
+			PORTD = 0x00;
 			break;
 		case change1:
 			PORTC = paddle1_position_x;
@@ -712,7 +712,7 @@ int reset_SM(int state){
 			player2_score = 0x00;
 			player1_scores_point = 0;
 			player2_scores_point = 0;
-			win = 0;
+			win_display_flag = 0;
 			break;	
 		default:
 			break;
