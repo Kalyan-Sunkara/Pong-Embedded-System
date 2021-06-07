@@ -11,6 +11,7 @@
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #include <avr/interrupt.h>
+#include "stdlib.h"
 #endif
 
 volatile unsigned char TimerFlag = 0;
@@ -154,7 +155,7 @@ int Joystick_Tick(int state) {
 // 	if(solo == 1){
 	switch (state) {
 		case wait_for_game3:
-			if((pause == 1) || (duo == 0){
+			if((pause == 1) || (duo == 0)){
 				state = wait_for_game3;	
 			}
 			else{
