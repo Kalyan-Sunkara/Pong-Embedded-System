@@ -93,87 +93,56 @@ unsigned char player1_score = 0x00;
 unsigned char player2_score = 0x00;
 // int goal = 0;
 
-enum menu_states {wait1, ingame};
+enum menu_states {wait1, solo_ingame, duo_ingame};
 int menu(int state){
 		switch (state){
 		case wait1:	
 			if((~PINB & 0x01) == 0x01){
-				state = ingame;	
+				state = solo_ingame;	
 			}
 			else if((~PINB & 0x02) == 0x02){
-				state = ingame;
+				state = duo_ingame;
 			}
 			else{
 				state = wait1;	
 			}
 			break;
-		case ingame:
+		case solo_ingame:
 			if(game_running == 0){
 				state = wait1;	
 			}
 			else{
-				state = ingame;	
+				state = solo_ingame;	
+			}
+			break;
+		case duo_ingame:
+			if(game_running == 0){
+				state = wait1;	
+			}
+			else{
+				state = duo_ingame;	
 			}
 			break;
 		default:	
 			state = wait1;
 			break;
 		}
-// 		case solo_state:
-// 			if(~PINB == 0x00){
-// 				state = solo_state_wait;
-// 			}
-// 			else{
-// 				state = solo_state;	
-// 			}
-// 			break;
-// 		case solo_state_wait:
-// 			if(game_running == 0){
-// 				state = wait1;
-// 			}
-// 			else{
-// 				state = solo_state_wait;	
-// 			}
-// 			break;
-// 		case duo_state:
-// 			if(~PINB == 0x00){
-// 				state = duo_state_wait;
-// 			}
-// 			else{
-// 				state = duo_state;	
-// 			}
-// 			break;
-// 		case duo_state_wait:
-// 			if(game_running == 0){
-// 				state = wait1;
-// 			}
-// 			else{
-// 				state = duo_state_wait;	
-// 			}
-// 			break;	
 	switch (state) {
 		case wait1:
 			duo = 0;
 			solo = 0;
 			game_running = 0;
 			break;
-		case ingame:
+		case solo_ingame:
+			solo = 1;
+			duo = 0;
 			game_running = 1;
 			break;
-// 		case solo_state:
-// 			solo = 1;
-// 			duo = 0;
-// 			game_running = 1;
-// 			break;
-// 		case solo_state_wait:
-// 			break;
-// 		case duo_state:
-// 			solo = 0;
-// 			duo = 1;
-// 			game_running = 1;
-// 			break;
-// 		case duo_state_wait:
-// 			break;
+		case duo_ingame:
+			solo = 0;
+			duo = 1;
+			game_running = 1;
+			break;
 		default:	
 			break;
 	}
@@ -185,7 +154,7 @@ int Joystick_Tick(int state) {
 // 	if(solo == 1){
 	switch (state) {
 		case wait_for_game3:
-			if(pause == 1){
+			if((pause == 1) || (duo == 0){
 				state = wait_for_game3;	
 			}
 			else{
@@ -737,7 +706,7 @@ enum AI_states{wait_for_game4, follow, stay};
 int AI(int state){
 	switch(state){
 		case wait_for_game4:
-			if(pause == 1){
+			if((pause == 1) || (solo == 0)){
 				state = wait_for_game4;	
 			}
 			else{
@@ -745,8 +714,20 @@ int AI(int state){
 			}
 			break;
 		case follow:
+			if((rand() % 2) == 1){
+				state = stay;	
+			}
+			else{
+				state = follow;	
+			}
 			break;
 		case stay:
+			if((rand() % 2) == 0){
+				state = follow;	
+			}
+			else{
+				state = stay;	
+			}
 			break;
 		default:
 			break;	
@@ -755,6 +736,18 @@ int AI(int state){
 		case wait_for_game4:
 			break;
 		case follow:
+			if (ball_position_y > paddle2_left) { // Reset demo 
+				paddle2_position_y = ((paddle2_position_y  >> 1) | 0x80);
+				paddle2_left = ((paddle2_left >> 1) | 0x80);
+				paddle2_middle = ((paddle2_middle >> 1) | 0x80);
+				paddle2_right = ((paddle2_right >> 1) | 0x80);
+			}else if (ball_position_y < paddle2_right) { // Move LED to start of next row
+				paddle2_position_y = ((paddle2_position_y  << 1) | 0x01);
+				paddle2_left = ((paddle2_left << 1) | 0x01);
+				paddle2_middle = ((paddle2_middle << 1) | 0x01);
+				paddle2_right = ((paddle2_right << 1) | 0x01);
+			}
+			else{}
 			break;
 		case stay:
 			break;
