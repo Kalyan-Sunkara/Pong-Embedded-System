@@ -778,8 +778,9 @@ int main(void) {
     static task task6;
     static task task7;
     static task task8;
+    static task task9;
 	
-    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6, &task7, &task8};
+    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6, &task7, &task8, &task9};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
     const char start = 0;
     
@@ -825,6 +826,11 @@ int main(void) {
     task8.period = 100;
     task8.elapsedTime = task8.period;
     task8.TickFct = &reset_SM;
+    
+    task9.state = start;
+    task9.period = 200;
+    task9.elapsedTime = task9.period;
+    task9.TickFct = &AI;
 	
     TimerSet(1);
     TimerOn();
