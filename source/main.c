@@ -615,7 +615,7 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win_display_flag = 1 == 1){
+			else if(win_display_flag == 1){
 				state = win_display;
 			}
 			else{
@@ -648,7 +648,7 @@ int display(int state){
 			if(game_running == 0){
 				state = menu_display;	
 			}
-			else if(win_display_flag = 1){
+			else if(win_display_flag == 1){
 				state = win_display;
 			}
 			else{
