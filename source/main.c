@@ -94,6 +94,7 @@ int player2_scores_point = 0;
 unsigned char player1_score = 0x00;
 unsigned char player2_score = 0x00;
 
+int go_right = 0;
 int win_display_flag = 0;
 // int goal = 0;
 
@@ -289,8 +290,11 @@ int ball_physics_Tick(int state) {
 			if(pause == 1){
 				state = wait_for_game;	
 			}
+			else if(go_right == 1){
+				state = ball_moving_right_straight;
+			}
 			else{
-				state = ball_moving_right_straight;	
+				state = ball_moving_left_straight;	
 			}
 			break;
 		case ball_moving_right_straight:
@@ -519,6 +523,7 @@ int game_SM(int state){
 					state = win;	
 				}
 				else{
+					go_right = 1;
 					state = hold;	
 				}
 			}
@@ -528,6 +533,7 @@ int game_SM(int state){
 					state = win;	
 				}
 				else{
+					go_right = 0;
 					state = hold;	
 				}	
 			}
