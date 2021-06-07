@@ -682,7 +682,7 @@ int ball_physics_Tick(int state) {
 			break;
 		case spin_right_down:
 			speed = 190;
-			if(spin_right_up_flag == 0){
+			if(spin_right_down_flag == 0){
 				ball_position_x >>=1;
 				spin_right_down_flag = 1;
 			}
