@@ -133,19 +133,19 @@ int menu(int state){
 			duo = 0;
 			solo = 0;
 			game_running = 0;
-			PORTB = (PORTB | 0x10);
+			PORTB = ((PORTB & 0x0F) | 0x10);
 			break;
 		case solo_ingame:
 			solo = 1;
 			duo = 0;
 			game_running = 1;
-			PORTB = (PORTB | 0x20);
+			PORTB = ((PORTB & 0x0F) | 0x20);
 			break;
 		case duo_ingame:
 			solo = 0;
 			duo = 1;
 			game_running = 1;
-			PORTB = (PORTB | 0x40);
+			PORTB = ((PORTB & 0x0F) | 0x40);
 			break;
 		default:	
 			break;
