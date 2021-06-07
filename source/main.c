@@ -810,7 +810,7 @@ int main(void) {
     task3.TickFct = &display;
  
     task4.state = start;
-    task4.period = 200;
+    task4.period = 100;
     task4.elapsedTime = task4.period;
     task4.TickFct = &ball_physics_Tick;
 	
